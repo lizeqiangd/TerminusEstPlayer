@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Html5VideoPlayer</title>
+    <script src="jquery-2.2.3.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="video_player.css"/>
+    <style>
+        body {
+            margin: 0;
+        }
+
+    </style>
+</head>
+<script>
+
+</script>
+<body>
+<div id="KokoroPlayer_123123" class="KokoroPlayer">
+    <video class='KokoroPlayer_video_content' src="http://localhost/video/父母手机.mp4" autoplay>
+        您的浏览器不支持该播放器,建议升级浏览器.
+    </video>
+    <div class="KokoroPlayer_controller">
+        <div class="background"></div>
+        <div class="kpcm">
+            <input type='button' class="play_button  left" value="play"> </input>
+            <input type='button' class="volume_button  right" value="volume"> </input>
+            <input type='button' class="resolution_button  right" value="resolution"> </input>
+            <input type='button' class="comment_button  right" value='comment'> </input>
+            <input type='button' class="fullscreen_button  right" value='fullscreen'> </input>
+        </div>
+
+    </div>
+</div>
+<input type='button' class="fullscreen_button left" id="kpc_fullscreen_button" value='fullscreen'> </input>
+
+
+</body>
+<script src="KokoroPlayer.ts"></script>
+<script>
+
+    $(window).resize();
+
+    function onStageResize() {
+        $('.KokoroPlayer').height($('.KokoroPlayer').width() / 16 * 9);
+
+    }
+    function addUIListener(player_id) {
+        $('#' + player_id + ' .play_button').click(
+                ()=> {
+                    alert('test')
+                }
+        );
+        $('#' + player_id + ' .volume_button').click(
+                function () {
+                    alert('test')
+                }
+        );
+        $('#' + player_id + ' .resolution_button').click(
+                function () {
+                    alert('test')
+                }
+        );
+        $('#' + player_id + ' .comment_button').click(
+                function () {
+                    alert('test')
+                }
+        );
+        $('#' + player_id + ' .fullscreen1_button').click(
+                function () {
+                    alert('test')
+                }
+        );
+    }
+
+    function createButtonEffert(element) {
+        element.onmouseover = function () {
+            element.opacity = 0.1;
+        };
+        element.onmouseout = function () {
+            element.opacity = 1;
+        };
+    }
+    $(document).ready(function () {
+        var player_id = 'KokoroPlayer_123123';
+
+        $('.KokoroPlayer_video_content')[0].volume = 0;
+        addUIListener(player_id);
+
+
+        onStageResize();
+
+//        getVideoURL(function (data) {
+//            if (data) {
+//                console.log(data);
+//                $('#video_content').attr('src', data);
+//            }else{
+//
+//            }
+//        }, '6df29b2417');
+    });
+
+
+    function getVideoURL(callback, video_unique) {
+        $.get({
+            url: 'http://zealer.lizeqiangd.com:1460/api/video/VideoAPI.php?api=LeCloudVideo&video_unique=' + video_unique,
+            success: function (data) {
+                var video_data = JSON.parse(data);
+                if (video_data['data'] && video_data['data']['video_list']) {
+                    video_data = video_data['data']['video_list'];
+                    for (var value in video_data) {
+                        //console.log(video_data[value]);
+                        if (video_data[value]['definition'] == '高清') {
+                            callback(video_data[value]['main_url']);
+                            return;
+                        }
+                    }
+                } else {
+                    callback(false);
+                    return;
+                }
+            }
+        });
+    }
+
+
+</script>
+</html>

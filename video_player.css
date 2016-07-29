@@ -1,0 +1,41 @@
+.KokoroPlayer {
+    width: 100%;
+    position: relative;
+}
+
+.KokoroPlayer_video_content {
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.KokoroPlayer_controller {
+    width: 100%;
+    height:70px;
+
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    z-index: 10;
+}
+.background{
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    height:100%;
+    opacity:.5;
+    background-color: #000000;
+    z-index: 11;
+}
+.kpcm {
+    position: absolute;
+    top:10px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    height:50px;
+    z-index: 12;
+
+}
