@@ -1,0 +1,399 @@
+.TerminusEstPlayer {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.video_content {
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.controller {
+    width: 100%;
+    height: 70px;
+
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+}
+
+.background {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    opacity: .5;
+    background-color: #000000;
+    z-index: 11;
+
+}
+
+.KokoroPlayerControllerManager {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    z-index: 12;
+}
+
+.kpcm_left {
+    float: left;
+}
+
+.kpcm_right {
+    float: right;
+}
+
+.kpcm_controller {
+    position: absolute;
+    width: 100%;
+    top: 10px;
+    height: 30px;
+}
+
+.player_controller_unit {
+    display: inline;
+    margin-left: 10px;
+    margin-right: 10px;
+    height: 100%;
+    vertical-align: middle;
+}
+
+.progress_bar {
+    position: relative;
+    width: 100%;
+    height: 5px;
+    top: 0;
+    left: 0;
+    background: #2b2b2b;
+    opacity: 1;
+
+}
+
+.buffer_bar {
+    position: absolute;
+    height: 5px;
+    top: 0;
+    background: #ffffff;
+    opacity: .8;
+
+}
+
+.play_bar {
+    position: absolute;
+    width: 0;
+    height: 5px;
+    top: 0;
+    left: 0;
+    background: #3399ff;
+    opacity: .8;
+
+}
+
+.play_time {
+    padding-top: 7px;
+    color: #ffffff;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.VideoMouseMask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.controller_panels {
+    position: absolute;
+    top: -5px;
+}
+
+.buffer_icon {
+    margin-left: -30px;
+    margin-top: -30px;
+    width: 60px;
+    height: 60px;
+    top: 50%;
+    left: 50%;
+}
+
+.player_controller_button {
+    background: url("./assest/PlayerSkins5.png");
+    width: 30px;
+    height: 30px;
+}
+
+.play_icon {
+    position: absolute;
+    background-position: -150px -0;
+    width: 80px;
+    height: 80px;
+    bottom: 90px;
+    right: 20px;
+}
+
+.fullscreen_button {
+    background-position: -90px -0;
+}
+
+.volume_button {
+    background-position: -0px -0;
+
+}
+
+.comment_button {
+    background-position: -30px -30px;
+    width: 60px;
+
+}
+
+.play_state1 {
+    background-position: -0px -60px;
+}
+
+.play_state0 {
+    background-position: -30px -60px;
+}
+
+.resolution_button {
+    padding-top: 5px;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    width: 35px;
+    color: #ffffff;
+    background: none;
+}
+
+.resolution_button_item {
+    color: #ffffff;
+    margin: 10px;
+    word-break: keep-all;
+    /*width: 30px; */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.KokoroBaseUnit {
+    position: absolute;
+    background-color: #000000;
+    opacity: .8;
+    /*border-radius: 5px;*/
+    margin: 0;
+    width: auto;
+    height: auto;
+    bottom: 100%;
+
+}
+
+.panel_vector {
+    width: 0;
+    height: 0;
+    top: 4px;
+    opacity: .8;
+    border-width: 4px 4px 0;
+    border-style: solid;
+    margin-left: auto;
+    margin-right: auto;
+    border-color: #000000 transparent transparent;
+    position: relative;
+}
+
+@-webkit-keyframes uil-default-anim {
+    0% {
+        opacity: 1
+    }
+    100% {
+        opacity: 0
+    }
+}
+
+@keyframes uil-default-anim {
+    0% {
+        opacity: 1
+    }
+    100% {
+        opacity: 0
+    }
+}
+
+.uil-default-css > div:nth-of-type(1) {
+    -webkit-animation: uil-default-anim 1s linear infinite;
+    animation: uil-default-anim 1s linear infinite;
+    -webkit-animation-delay: -0.5s;
+    animation-delay: -0.5s;
+}
+
+.uil-default-css {
+    position: relative;
+    background: none;
+    width: 200px;
+    height: 200px;
+}
+
+.uil-default-css > div:nth-of-type(2) {
+    -webkit-animation: uil-default-anim 1s linear infinite;
+    animation: uil-default-anim 1s linear infinite;
+    -webkit-animation-delay: -0.4166666666666667s;
+    animation-delay: -0.4166666666666667s;
+}
+
+.uil-default-css {
+    position: relative;
+    background: none;
+    width: 200px;
+    height: 200px;
+}
+
+.uil-default-css > div:nth-of-type(3) {
+    -webkit-animation: uil-default-anim 1s linear infinite;
+    animation: uil-default-anim 1s linear infinite;
+    -webkit-animation-delay: -0.33333333333333337s;
+    animation-delay: -0.33333333333333337s;
+}
+
+.uil-default-css {
+    position: relative;
+    background: none;
+    width: 200px;
+    height: 200px;
+}
+
+.uil-default-css > div:nth-of-type(4) {
+    -webkit-animation: uil-default-anim 1s linear infinite;
+    animation: uil-default-anim 1s linear infinite;
+    -webkit-animation-delay: -0.25s;
+    animation-delay: -0.25s;
+}
+
+.uil-default-css {
+    position: relative;
+    background: none;
+    width: 200px;
+    height: 200px;
+}
+
+.uil-default-css > div:nth-of-type(5) {
+    -webkit-animation: uil-default-anim 1s linear infinite;
+    animation: uil-default-anim 1s linear infinite;
+    -webkit-animation-delay: -0.16666666666666669s;
+    animation-delay: -0.16666666666666669s;
+}
+
+.uil-default-css {
+    position: relative;
+    background: none;
+    width: 200px;
+    height: 200px;
+}
+
+.uil-default-css > div:nth-of-type(6) {
+    -webkit-animation: uil-default-anim 1s linear infinite;
+    animation: uil-default-anim 1s linear infinite;
+    -webkit-animation-delay: -0.08333333333333331s;
+    animation-delay: -0.08333333333333331s;
+}
+
+.uil-default-css {
+    position: relative;
+    background: none;
+    width: 200px;
+    height: 200px;
+}
+
+.uil-default-css > div:nth-of-type(7) {
+    -webkit-animation: uil-default-anim 1s linear infinite;
+    animation: uil-default-anim 1s linear infinite;
+    -webkit-animation-delay: 0s;
+    animation-delay: 0s;
+}
+
+.uil-default-css {
+    position: relative;
+    background: none;
+    width: 200px;
+    height: 200px;
+}
+
+.uil-default-css > div:nth-of-type(8) {
+    -webkit-animation: uil-default-anim 1s linear infinite;
+    animation: uil-default-anim 1s linear infinite;
+    -webkit-animation-delay: 0.08333333333333337s;
+    animation-delay: 0.08333333333333337s;
+}
+
+.uil-default-css {
+    position: relative;
+    background: none;
+    width: 200px;
+    height: 200px;
+}
+
+.uil-default-css > div:nth-of-type(9) {
+    -webkit-animation: uil-default-anim 1s linear infinite;
+    animation: uil-default-anim 1s linear infinite;
+    -webkit-animation-delay: 0.16666666666666663s;
+    animation-delay: 0.16666666666666663s;
+}
+
+.uil-default-css {
+    position: relative;
+    background: none;
+    width: 200px;
+    height: 200px;
+}
+
+.uil-default-css > div:nth-of-type(10) {
+    -webkit-animation: uil-default-anim 1s linear infinite;
+    animation: uil-default-anim 1s linear infinite;
+    -webkit-animation-delay: 0.25s;
+    animation-delay: 0.25s;
+}
+
+.uil-default-css {
+    position: relative;
+    background: none;
+    width: 200px;
+    height: 200px;
+}
+
+.uil-default-css > div:nth-of-type(11) {
+    -webkit-animation: uil-default-anim 1s linear infinite;
+    animation: uil-default-anim 1s linear infinite;
+    -webkit-animation-delay: 0.33333333333333337s;
+    animation-delay: 0.33333333333333337s;
+}
+
+.uil-default-css {
+    position: relative;
+    background: none;
+    width: 200px;
+    height: 200px;
+}
+
+.uil-default-css > div:nth-of-type(12) {
+    -webkit-animation: uil-default-anim 1s linear infinite;
+    animation: uil-default-anim 1s linear infinite;
+    -webkit-animation-delay: 0.41666666666666663s;
+    animation-delay: 0.41666666666666663s;
+}
+
+.uil-default-css {
+    position: relative;
+    background: none;
+    width: 200px;
+    height: 200px;
+}

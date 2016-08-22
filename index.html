@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cn">
 <head>
     <meta charset="UTF-8">
     <title>Html5VideoPlayer</title>
-    <script src="jquery-2.2.3.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="video_player.css"/>
+    <link rel="stylesheet" type="text/css" href="TerminusEstPlayer.css"/>
     <style>
         body {
             margin: 0;
@@ -16,113 +15,91 @@
 
 </script>
 <body>
-<div id="KokoroPlayer_123123" class="KokoroPlayer">
-    <video class='KokoroPlayer_video_content' src="http://localhost/video/父母手机.mp4" autoplay>
+<div id="TerminusEstPlayer_123123" class="TerminusEstPlayer">
+    <video class='video_content' src="http://localhost/video/父母手机.mp4">
         您的浏览器不支持该播放器,建议升级浏览器.
     </video>
-    <div class="KokoroPlayer_controller">
-        <div class="background"></div>
-        <div class="kpcm">
-            <input type='button' class="play_button  left" value="play"> </input>
-            <input type='button' class="volume_button  right" value="volume"> </input>
-            <input type='button' class="resolution_button  right" value="resolution"> </input>
-            <input type='button' class="comment_button  right" value='comment'> </input>
-            <input type='button' class="fullscreen_button  right" value='fullscreen'> </input>
+    <div class="VideoMouseMask">
+        <div class=" KokoroBaseUnit buffer_icon">
+            <div class='uil-default-css' style='transform:scale(0.3);top:-70px;left:-70px'>
+                <div style='top:80px;left:95px;width:10px;height:40px;background:#ffffff;-webkit-transform:rotate(0deg) translate(0,-70px);transform:rotate(0deg) translate(0,-70px);border-radius:4px;position:absolute;'></div>
+                <div style='top:80px;left:95px;width:10px;height:40px;background:#ffffff;-webkit-transform:rotate(30deg) translate(0,-70px);transform:rotate(30deg) translate(0,-70px);border-radius:4px;position:absolute;'></div>
+                <div style='top:80px;left:95px;width:10px;height:40px;background:#ffffff;-webkit-transform:rotate(60deg) translate(0,-70px);transform:rotate(60deg) translate(0,-70px);border-radius:4px;position:absolute;'></div>
+                <div style='top:80px;left:95px;width:10px;height:40px;background:#ffffff;-webkit-transform:rotate(90deg) translate(0,-70px);transform:rotate(90deg) translate(0,-70px);border-radius:4px;position:absolute;'></div>
+                <div style='top:80px;left:95px;width:10px;height:40px;background:#ffffff;-webkit-transform:rotate(120deg) translate(0,-70px);transform:rotate(120deg) translate(0,-70px);border-radius:4px;position:absolute;'></div>
+                <div style='top:80px;left:95px;width:10px;height:40px;background:#ffffff;-webkit-transform:rotate(150deg) translate(0,-70px);transform:rotate(150deg) translate(0,-70px);border-radius:4px;position:absolute;'></div>
+                <div style='top:80px;left:95px;width:10px;height:40px;background:#ffffff;-webkit-transform:rotate(180deg) translate(0,-70px);transform:rotate(180deg) translate(0,-70px);border-radius:4px;position:absolute;'></div>
+                <div style='top:80px;left:95px;width:10px;height:40px;background:#ffffff;-webkit-transform:rotate(210deg) translate(0,-70px);transform:rotate(210deg) translate(0,-70px);border-radius:4px;position:absolute;'></div>
+                <div style='top:80px;left:95px;width:10px;height:40px;background:#ffffff;-webkit-transform:rotate(240deg) translate(0,-70px);transform:rotate(240deg) translate(0,-70px);border-radius:4px;position:absolute;'></div>
+                <div style='top:80px;left:95px;width:10px;height:40px;background:#ffffff;-webkit-transform:rotate(270deg) translate(0,-70px);transform:rotate(270deg) translate(0,-70px);border-radius:4px;position:absolute;'></div>
+                <div style='top:80px;left:95px;width:10px;height:40px;background:#ffffff;-webkit-transform:rotate(300deg) translate(0,-70px);transform:rotate(300deg) translate(0,-70px);border-radius:4px;position:absolute;'></div>
+                <div style='top:80px;left:95px;width:10px;height:40px;background:#ffffff;-webkit-transform:rotate(330deg) translate(0,-70px);transform:rotate(330deg) translate(0,-70px);border-radius:4px;position:absolute;'></div>
+            </div>
         </div>
+    </div>
+    <div class="controller">
+        <div class="play_icon player_controller_button"></div>
+        <div class="background"></div>
+        <div class="KokoroPlayerControllerManager">
 
+            <div class="controller_panels">
+
+                <div class="resolution_panel KokoroBaseUnit">
+                    <div class="resolution_button_item">原画</div>
+                    <div class="resolution_button_item">超清</div>
+                    <div class="resolution_button_item">高清</div>
+                    <div class="resolution_button_item">标清</div>
+                    <div class="panel_vector"></div>
+                </div>
+
+                <div class="volume_panel KokoroBaseUnit">
+                    <div>volume panel</div>
+
+                    <div class="panel_vector"></div>
+                </div>
+                <div class="comment_panel KokoroBaseUnit">
+                    <div>comment panel</div>
+
+                    <div class="panel_vector"></div>
+
+                </div>
+            </div>
+
+
+            <div class="progress_bar">
+                <div class="buffer_bar"></div>
+                <div class="play_bar"></div>
+            </div>
+
+            <div class="kpcm_controller">
+                <!--right-->
+                <div class="play_button player_controller_unit player_controller_button kpcm_left">
+
+                </div>
+                <div class="play_time player_controller_unit kpcm_left">loading.</div>
+                <!--left-->
+
+                <div class="fullscreen_button player_controller_unit player_controller_button kpcm_right">
+
+                </div>
+                <div class="resolution_button player_controller_unit player_controller_button kpcm_right">
+                    高清
+                </div>
+                <div class="comment_button player_controller_unit player_controller_button kpcm_right">
+
+                </div>
+                <div class="volume_button player_controller_unit player_controller_button kpcm_right">
+
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-<input type='button' class="fullscreen_button left" id="kpc_fullscreen_button" value='fullscreen'> </input>
-
-
 </body>
-<script src="KokoroPlayer.ts"></script>
+<script src="jquery-3.1.0.js"></script>
+<script src="screenfull.js"></script>
+<script src="TerminusEstPlayer.js"></script>
 <script>
-
-    $(window).resize();
-
-    function onStageResize() {
-        $('.KokoroPlayer').height($('.KokoroPlayer').width() / 16 * 9);
-
-    }
-    function addUIListener(player_id) {
-        $('#' + player_id + ' .play_button').click(
-                ()=> {
-                    alert('test')
-                }
-        );
-        $('#' + player_id + ' .volume_button').click(
-                function () {
-                    alert('test')
-                }
-        );
-        $('#' + player_id + ' .resolution_button').click(
-                function () {
-                    alert('test')
-                }
-        );
-        $('#' + player_id + ' .comment_button').click(
-                function () {
-                    alert('test')
-                }
-        );
-        $('#' + player_id + ' .fullscreen1_button').click(
-                function () {
-                    alert('test')
-                }
-        );
-    }
-
-    function createButtonEffert(element) {
-        element.onmouseover = function () {
-            element.opacity = 0.1;
-        };
-        element.onmouseout = function () {
-            element.opacity = 1;
-        };
-    }
-    $(document).ready(function () {
-        var player_id = 'KokoroPlayer_123123';
-
-        $('.KokoroPlayer_video_content')[0].volume = 0;
-        addUIListener(player_id);
-
-
-        onStageResize();
-
-//        getVideoURL(function (data) {
-//            if (data) {
-//                console.log(data);
-//                $('#video_content').attr('src', data);
-//            }else{
-//
-//            }
-//        }, '6df29b2417');
-    });
-
-
-    function getVideoURL(callback, video_unique) {
-        $.get({
-            url: 'http://zealer.lizeqiangd.com:1460/api/video/VideoAPI.php?api=LeCloudVideo&video_unique=' + video_unique,
-            success: function (data) {
-                var video_data = JSON.parse(data);
-                if (video_data['data'] && video_data['data']['video_list']) {
-                    video_data = video_data['data']['video_list'];
-                    for (var value in video_data) {
-                        //console.log(video_data[value]);
-                        if (video_data[value]['definition'] == '高清') {
-                            callback(video_data[value]['main_url']);
-                            return;
-                        }
-                    }
-                } else {
-                    callback(false);
-                    return;
-                }
-            }
-        });
-    }
-
 
 </script>
 </html>
