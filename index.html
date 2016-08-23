@@ -1,105 +1,20 @@
 <!DOCTYPE html>
-<html lang="cn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Html5VideoPlayer</title>
-    <link rel="stylesheet" type="text/css" href="TerminusEstPlayer.css"/>
-    <style>
-        body {
-            margin: 0;
-        }
-
-    </style>
+    <title>TerminusEstPlayer</title>
+    <script src="./src/com/lizeqiangd/player/TerminusEstPlayer/utils/jquery-3.1.0.js"></script>
+    <!--<script src="./src/com/lizeqiangd/player/TerminusEstPlayer/utils/require.js"></script>-->
+    <script src="./bin/TerminusEstPlayer.js"></script>
+    <!--<script src="./player.js"></script>-->
 </head>
-<script>
-
-</script>
 <body>
-<div id="TerminusEstPlayer_123123" class="TerminusEstPlayer">
-    <video class='video_content' src="http://localhost/video/父母手机.mp4">
-        您的浏览器不支持该播放器,建议升级浏览器.
-    </video>
-    <div class="VideoMouseMask">
-        <div class=" KokoroBaseUnit buffer_icon">
-            <div class='uil-default-css' style='transform:scale(0.3);top:-70px;left:-70px'>
-                <div style='top:80px;left:95px;width:10px;height:40px;background:#ffffff;-webkit-transform:rotate(0deg) translate(0,-70px);transform:rotate(0deg) translate(0,-70px);border-radius:4px;position:absolute;'></div>
-                <div style='top:80px;left:95px;width:10px;height:40px;background:#ffffff;-webkit-transform:rotate(30deg) translate(0,-70px);transform:rotate(30deg) translate(0,-70px);border-radius:4px;position:absolute;'></div>
-                <div style='top:80px;left:95px;width:10px;height:40px;background:#ffffff;-webkit-transform:rotate(60deg) translate(0,-70px);transform:rotate(60deg) translate(0,-70px);border-radius:4px;position:absolute;'></div>
-                <div style='top:80px;left:95px;width:10px;height:40px;background:#ffffff;-webkit-transform:rotate(90deg) translate(0,-70px);transform:rotate(90deg) translate(0,-70px);border-radius:4px;position:absolute;'></div>
-                <div style='top:80px;left:95px;width:10px;height:40px;background:#ffffff;-webkit-transform:rotate(120deg) translate(0,-70px);transform:rotate(120deg) translate(0,-70px);border-radius:4px;position:absolute;'></div>
-                <div style='top:80px;left:95px;width:10px;height:40px;background:#ffffff;-webkit-transform:rotate(150deg) translate(0,-70px);transform:rotate(150deg) translate(0,-70px);border-radius:4px;position:absolute;'></div>
-                <div style='top:80px;left:95px;width:10px;height:40px;background:#ffffff;-webkit-transform:rotate(180deg) translate(0,-70px);transform:rotate(180deg) translate(0,-70px);border-radius:4px;position:absolute;'></div>
-                <div style='top:80px;left:95px;width:10px;height:40px;background:#ffffff;-webkit-transform:rotate(210deg) translate(0,-70px);transform:rotate(210deg) translate(0,-70px);border-radius:4px;position:absolute;'></div>
-                <div style='top:80px;left:95px;width:10px;height:40px;background:#ffffff;-webkit-transform:rotate(240deg) translate(0,-70px);transform:rotate(240deg) translate(0,-70px);border-radius:4px;position:absolute;'></div>
-                <div style='top:80px;left:95px;width:10px;height:40px;background:#ffffff;-webkit-transform:rotate(270deg) translate(0,-70px);transform:rotate(270deg) translate(0,-70px);border-radius:4px;position:absolute;'></div>
-                <div style='top:80px;left:95px;width:10px;height:40px;background:#ffffff;-webkit-transform:rotate(300deg) translate(0,-70px);transform:rotate(300deg) translate(0,-70px);border-radius:4px;position:absolute;'></div>
-                <div style='top:80px;left:95px;width:10px;height:40px;background:#ffffff;-webkit-transform:rotate(330deg) translate(0,-70px);transform:rotate(330deg) translate(0,-70px);border-radius:4px;position:absolute;'></div>
-            </div>
-        </div>
+    <div id="TerminusEstPlayer_1">
+
     </div>
-    <div class="controller">
-        <div class="play_icon player_controller_button"></div>
-        <div class="background"></div>
-        <div class="KokoroPlayerControllerManager">
-
-            <div class="controller_panels">
-
-                <div class="resolution_panel KokoroBaseUnit">
-                    <div class="resolution_button_item">原画</div>
-                    <div class="resolution_button_item">超清</div>
-                    <div class="resolution_button_item">高清</div>
-                    <div class="resolution_button_item">标清</div>
-                    <div class="panel_vector"></div>
-                </div>
-
-                <div class="volume_panel KokoroBaseUnit">
-                    <div>volume panel</div>
-
-                    <div class="panel_vector"></div>
-                </div>
-                <div class="comment_panel KokoroBaseUnit">
-                    <div>comment panel</div>
-
-                    <div class="panel_vector"></div>
-
-                </div>
-            </div>
-
-
-            <div class="progress_bar">
-                <div class="buffer_bar"></div>
-                <div class="play_bar"></div>
-            </div>
-
-            <div class="kpcm_controller">
-                <!--right-->
-                <div class="play_button player_controller_unit player_controller_button kpcm_left">
-
-                </div>
-                <div class="play_time player_controller_unit kpcm_left">loading.</div>
-                <!--left-->
-
-                <div class="fullscreen_button player_controller_unit player_controller_button kpcm_right">
-
-                </div>
-                <div class="resolution_button player_controller_unit player_controller_button kpcm_right">
-                    高清
-                </div>
-                <div class="comment_button player_controller_unit player_controller_button kpcm_right">
-
-                </div>
-                <div class="volume_button player_controller_unit player_controller_button kpcm_right">
-
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 </body>
-<script src="jquery-3.1.0.js"></script>
-<script src="screenfull.js"></script>
-<script src="TerminusEstPlayer.js"></script>
 <script>
+    new TerminusEstPlayer('TerminusEstPlayer_1').load('http://localhost/video/父母手机.mp4').getKokoroVideoManager.volume(0);
 
 </script>
 </html>

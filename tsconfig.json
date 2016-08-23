@@ -1,7 +1,14 @@
 {
   "compilerOptions": {
+//    "module":"amd",
     "module": "commonjs",
-    "target": "es6",
+    "target": "es5",
+//    "removeComments": true,
+//    "preserveConstEnums": true,
+//    "outDir": "./build",
+//    "outFile":"./player.js",
+//    "sourceRoot": "./src/",
+//    "rootDir": "./src/",
     "sourceMap": true
   },
   "exclude": [
