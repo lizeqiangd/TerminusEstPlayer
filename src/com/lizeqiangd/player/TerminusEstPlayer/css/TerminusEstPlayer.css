@@ -1,8 +1,24 @@
-.TerminusEstPlayer {
-    width: 100%;
+.tep_video{
     position: relative;
     overflow: hidden;
+    width: 100%;
 }
+
+
+
+
+
+
+
+
+
+
+
+/*.TerminusEstPlayer {*/
+    /**/
+    /*position: relative;*/
+    /*overflow: hidden;*/
+/*}*/
 
 .video_content {
     width: 100%;
@@ -129,7 +145,7 @@
 }
 
 .player_controller_button {
-    background: url("./assest/PlayerSkins5.png");
+    background: url("./../assest/PlayerSkins5.png");
     width: 30px;
     height: 30px;
 }

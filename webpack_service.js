@@ -5,7 +5,6 @@ console.log(config);
 var compiler = webpack(config);
 
 compiler.run(function(err, stats) {
-    console.log(err);
 
 });
 // or
@@ -14,6 +13,5 @@ compiler.watch({ // watch options:
     poll: true // use polling instead of native watchers
     // pass a number to set the polling interval
 }, function(err, stats) {
-    console.log(err);
 });
 console.log('啧啧啧,开始写前端啦?')

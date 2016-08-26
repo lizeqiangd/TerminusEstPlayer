@@ -9,12 +9,14 @@
     <!--<script src="./player.js"></script>-->
 </head>
 <body>
-    <div id="TerminusEstPlayer_1">
+<div id="TerminusEstPlayer_1">
 
-    </div>
+</div>
 </body>
 <script>
-    new TerminusEstPlayer('TerminusEstPlayer_1').load('http://localhost/video/父母手机.mp4').getKokoroVideoManager.volume(0);
+    var player = new TerminusEstPlayer('TerminusEstPlayer_1');
+    player.getKokoroVideoManager.volume(0);
+    player.loadLeCloudVideo('30690f1c37')
 
 </script>
 </html>

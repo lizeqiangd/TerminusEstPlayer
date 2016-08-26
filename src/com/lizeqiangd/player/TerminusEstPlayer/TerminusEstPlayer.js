@@ -1,27 +1,56 @@
+"use strict";
 /**
  * Created by lizeq on 8/22/2016.
  */
 /// <reference path="./utils/jquery.d.ts" />
-/// <reference path='./constant/PlayerConstant.ts'/>
-"use strict";
-var PlayerConstant_1 = require('./constant/PlayerConstant');
-var KokoroVideoManager_1 = require('./applications/KokoroVideoManager');
-var TerminusEstPlayer = (function () {
-    function TerminusEstPlayer(_player_identfication) {
+/// <reference path='./system/constant/PlayerConstant.ts'/>
+//css loader
+require('./css/TerminusEstPlayer.css');
+//class loader
+const PlayerConstant_1 = require('./system/constant/PlayerConstant');
+const KokoroVideoManager_1 = require('./applications/KokoroVideo/KokoroVideoManager');
+const LeCloudVideoAPI_1 = require('./net/LeCloudVideoAPI');
+const PlayerControlEvent_1 = require('./events/PlayerControlEvent');
+class TerminusEstPlayer {
+    constructor(_player_identfication) {
         this.player_identfication = '';
         this.player_identfication = _player_identfication;
         this.createPlayerElements();
-        this.kvm = new KokoroVideoManager_1.default(this.getPlayerVideoHTMLElement(), this.onVideoCallback);
+        this.kvm = new KokoroVideoManager_1.default(this.getPlayerVideoHTMLElement());
+        this.lecloud = new LeCloudVideoAPI_1.default();
         this.addUnitEventListener();
         $(this.getPlayerIdentfiacationSelector).height(450);
         $(this.getPlayerIdentfiacationSelector).width(800);
         return this;
     }
-    TerminusEstPlayer.prototype.load = function (url) {
+    createPlayerElements() {
+        let player = this.getPlayerJQuerySelector();
+        player.innerHTML += `<video class=${PlayerConstant_1.default.class_video} autoplay="false"></video>`;
+        player.innerHTML += `<div class=${PlayerConstant_1.default.class_comment}></div>`;
+        player.innerHTML += `<div class=${PlayerConstant_1.default.class_control}></div>`;
+    }
+    loadLeCloudVideo(vu) {
+        this.lecloud.get_video_list_proxy(vu, (data) => {
+            this.changeVideoResolution('超清');
+        });
+    }
+    load(url) {
         this.kvm.load(url);
         return this;
-    };
-    TerminusEstPlayer.prototype.config = function (obj) {
+    }
+    /**
+     * 切换视频清晰度.如果不存在则播放器高清.
+     * @param type
+     */
+    changeVideoResolution(type) {
+        let vurl = this.lecloud.getVideoResolutionURL(type);
+        if (vurl) {
+            this.load(vurl);
+            return;
+        }
+        this.changeVideoResolution('高清');
+    }
+    config(obj) {
         for (var key in obj) {
             switch (obj[key]) {
                 case 'comment':
@@ -29,57 +58,43 @@ var TerminusEstPlayer = (function () {
                 default:
             }
         }
-    };
-    TerminusEstPlayer.prototype.createPlayerElements = function () {
-        var player = this.getPlayerJQuerySelector();
-        player.innerHTML += "<video class=" + PlayerConstant_1.default.class_video + " autoplay=\"false\"></video>";
-        player.innerHTML += "<div class=" + PlayerConstant_1.default.class_comment + "></div>";
-        player.innerHTML += "<div class=" + PlayerConstant_1.default.class_control + "></div>";
-    };
-    TerminusEstPlayer.prototype.getPlayerJQuerySelector = function () {
+    }
+    getPlayerJQuerySelector() {
         return $(this.getPlayerIdentfiacationSelector)[0];
-    };
-    TerminusEstPlayer.prototype.getPlayerVideoHTMLElement = function () {
-        return $(this.getPlayerIdentfiacationSelector + (" ." + PlayerConstant_1.default.class_video))[0];
-    };
-    TerminusEstPlayer.prototype.addUnitEventListener = function () {
-        $(window).resize(this.onStageResize);
-    };
-    TerminusEstPlayer.prototype.onVideoCallback = function (event_type) {
-        switch (event_type) {
-            case KokoroVideoManager_1.default.EVENT_VOLUMECHANGE:
-                break;
-            case KokoroVideoManager_1.default.EVENT_CANPLAY:
-                break;
-            case KokoroVideoManager_1.default.EVENT_LOADEDDATA:
-                break;
-            case KokoroVideoManager_1.default.EVENT_SEEKING:
-                break;
-            case KokoroVideoManager_1.default.EVENT_TIMEUPDATE:
-                break;
-            case KokoroVideoManager_1.default.EVENT_PLAY:
-                break;
-            case KokoroVideoManager_1.default.EVENT_PAUSE:
-                break;
-        }
-    };
-    TerminusEstPlayer.prototype.onStageResize = function () {
-    };
-    Object.defineProperty(TerminusEstPlayer.prototype, "getPlayerIdentfiacationSelector", {
-        get: function () {
-            return '#' + this.player_identfication + ' ';
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TerminusEstPlayer.prototype, "getKokoroVideoManager", {
-        get: function () {
-            return this.kvm;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    return TerminusEstPlayer;
-}());
+    }
+    getPlayerVideoHTMLElement() {
+        return $(this.getPlayerIdentfiacationSelector + ` .${PlayerConstant_1.default.class_video}`)[0];
+    }
+    addUnitEventListener() {
+        $(this.getPlayerJQuerySelector()).resize(this.onPlayerResizie);
+        this.getKokoroVideoManager.addEventListener(PlayerControlEvent_1.default.PAUSE, (event) => {
+            console.log(event.type, event.data);
+        });
+        this.getKokoroVideoManager.addEventListener(PlayerControlEvent_1.default.PLAY, (event) => {
+            console.log(event.type, event.data);
+        });
+        this.getKokoroVideoManager.addEventListener(PlayerControlEvent_1.default.VOLUMECHANGE, (event) => {
+            console.log(event.type, event.data);
+        });
+        this.getKokoroVideoManager.addEventListener(PlayerControlEvent_1.default.SEEK, (event) => {
+            console.log(event.type, event.data);
+        });
+        this.getKokoroVideoManager.addEventListener(PlayerControlEvent_1.default.CANPLAY, (event) => {
+            console.log(event.type, event.data);
+        });
+        this.getKokoroVideoManager.addEventListener(PlayerControlEvent_1.default.TIMEUPDATE, (event) => {
+            console.log(event.type, event.data);
+        });
+    }
+    onPlayerResizie() {
+        console.log('onPlayerResize:', $(this.getPlayerJQuerySelector()).width(), $(this.getPlayerJQuerySelector()).height());
+    }
+    get getPlayerIdentfiacationSelector() {
+        return '#' + this.player_identfication + ' ';
+    }
+    get getKokoroVideoManager() {
+        return this.kvm;
+    }
+}
 window['TerminusEstPlayer'] = TerminusEstPlayer;
 //# sourceMappingURL=TerminusEstPlayer.js.map
