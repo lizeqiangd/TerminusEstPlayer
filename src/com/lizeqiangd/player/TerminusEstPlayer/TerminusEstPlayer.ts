@@ -11,31 +11,44 @@ import PlayerConstant from './system/constant/PlayerConstant';
 import KokoroVideoManager from './applications/KokoroVideo/KokoroVideoManager';
 import LeCloudVideoAPI from './net/LeCloudVideoAPI';
 import PlayerControlEvent from './events/PlayerControlEvent';
+import DateTimeUtils from './components/DateTimeUtils';
+import KokoroVideoController from './applications/KokoroVideoController/KokoroVideoController';
 
 class TerminusEstPlayer {
     private player_identfication: string = '';
-    private kvm: KokoroVideoManager;
     private lecloud: LeCloudVideoAPI;
+
+    private kvm: KokoroVideoManager;
+    private kvc: KokoroVideoController;
 
     constructor(_player_identfication: string) {
         this.player_identfication = _player_identfication;
-        this.createPlayerElements();
 
-        this.kvm = new KokoroVideoManager(this.getPlayerVideoHTMLElement());
-        this.lecloud = new LeCloudVideoAPI();
+        let player: HTMLElement = this.getPlayerJQuerySelector();
+        $(player).height(450);
+        $(player).width(800);
+        $(player).addClass(PlayerConstant.class_player);
+
+
+        this.kvm = new KokoroVideoManager();
+        player.appendChild(this.kvm.element);
+
+        this.kvc = new KokoroVideoController();
+        player.appendChild(this.kvc.element);
+
 
         this.addUnitEventListener();
-        $(this.getPlayerIdentfiacationSelector).height(450);
-        $(this.getPlayerIdentfiacationSelector).width(800);
+
+        console.log(DateTimeUtils.getDate());
+        console.log(DateTimeUtils.formatSecond(999999));
+
+
+        this.lecloud = new LeCloudVideoAPI();
+
+
         return this;
     }
 
-    createPlayerElements() {
-        let player: HTMLElement = this.getPlayerJQuerySelector();
-        player.innerHTML += `<video class=${PlayerConstant.class_video} autoplay="false"></video>`;
-        player.innerHTML += `<div class=${PlayerConstant.class_comment}></div>`;
-        player.innerHTML += `<div class=${PlayerConstant.class_control}></div>`;
-    }
 
     loadLeCloudVideo(vu: string) {
         this.lecloud.get_video_list_proxy(vu, (data: any)=> {
@@ -71,13 +84,6 @@ class TerminusEstPlayer {
         }
     }
 
-    getPlayerJQuerySelector(): HTMLElement {
-        return $(this.getPlayerIdentfiacationSelector)[0];
-    }
-
-    getPlayerVideoHTMLElement(): HTMLVideoElement {
-        return $(this.getPlayerIdentfiacationSelector + ` .${PlayerConstant.class_video}`)[0] as HTMLVideoElement;
-    }
 
     addUnitEventListener() {
         $(this.getPlayerJQuerySelector()).resize(this.onPlayerResizie);
@@ -106,6 +112,10 @@ class TerminusEstPlayer {
 
         })
 
+    }
+
+    getPlayerJQuerySelector(): HTMLElement {
+        return $(this.getPlayerIdentfiacationSelector)[0];
     }
 
     onPlayerResizie() {

@@ -3,31 +3,23 @@
  */
 /// <reference path='./../../utils/jquery.d.ts'/>
 
-import PlayerConstant from '../../system/constant/PlayerConstant';
+import PlayerConstant from './../../system/constant/PlayerConstant';
+import KokoroBaseUnit from './../../abstract/KokoroBaseUnit';
+import UnitEvent from './../../events/UnitEvent';
 
-export default class VideoMask{
-    private element:HTMLElement;
+export default class VideoMask extends KokoroBaseUnit{
 
-    constructor(parent:HTMLElement){
+    constructor(){
+        super();
         this.createElement();
+
     }
 
     createElement(){
-        this.element=document.createElement('div');
+        this._element=document.createElement('div');
         this.element.className=PlayerConstant.class_videomask;
     }
 
-    get getElement():HTMLElement{
-        return this.element;
-    }
 
-
-    display(value:boolean){
-        if(value){
-            $(this.element).fadeIn();
-        }else{
-            $(this.element).fadeOut();
-        }
-    }
 
 }

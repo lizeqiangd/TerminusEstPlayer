@@ -11,8 +11,19 @@ class KokoroBaseUnit {
     dispatchEvent(e) {
         this._element.dispatchEvent(e);
     }
+    display(value) {
+        if (value) {
+            $(this.element).fadeIn();
+        }
+        else {
+            $(this.element).fadeOut();
+        }
+    }
     get element() {
         return this._element;
+    }
+    get getJQuerySelector() {
+        return $(this.element);
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });

@@ -11,23 +11,25 @@ const PlayerConstant_1 = require('./system/constant/PlayerConstant');
 const KokoroVideoManager_1 = require('./applications/KokoroVideo/KokoroVideoManager');
 const LeCloudVideoAPI_1 = require('./net/LeCloudVideoAPI');
 const PlayerControlEvent_1 = require('./events/PlayerControlEvent');
+const DateTimeUtils_1 = require('./components/DateTimeUtils');
+const KokoroVideoController_1 = require('./applications/KokoroVideoController/KokoroVideoController');
 class TerminusEstPlayer {
     constructor(_player_identfication) {
         this.player_identfication = '';
         this.player_identfication = _player_identfication;
-        this.createPlayerElements();
-        this.kvm = new KokoroVideoManager_1.default(this.getPlayerVideoHTMLElement());
-        this.lecloud = new LeCloudVideoAPI_1.default();
-        this.addUnitEventListener();
-        $(this.getPlayerIdentfiacationSelector).height(450);
-        $(this.getPlayerIdentfiacationSelector).width(800);
-        return this;
-    }
-    createPlayerElements() {
         let player = this.getPlayerJQuerySelector();
-        player.innerHTML += `<video class=${PlayerConstant_1.default.class_video} autoplay="false"></video>`;
-        player.innerHTML += `<div class=${PlayerConstant_1.default.class_comment}></div>`;
-        player.innerHTML += `<div class=${PlayerConstant_1.default.class_control}></div>`;
+        $(player).height(450);
+        $(player).width(800);
+        $(player).addClass(PlayerConstant_1.default.class_player);
+        this.kvm = new KokoroVideoManager_1.default();
+        player.appendChild(this.kvm.element);
+        this.kvc = new KokoroVideoController_1.default();
+        player.appendChild(this.kvc.element);
+        this.addUnitEventListener();
+        console.log(DateTimeUtils_1.default.getDate());
+        console.log(DateTimeUtils_1.default.formatSecond(999999));
+        this.lecloud = new LeCloudVideoAPI_1.default();
+        return this;
     }
     loadLeCloudVideo(vu) {
         this.lecloud.get_video_list_proxy(vu, (data) => {
@@ -59,12 +61,6 @@ class TerminusEstPlayer {
             }
         }
     }
-    getPlayerJQuerySelector() {
-        return $(this.getPlayerIdentfiacationSelector)[0];
-    }
-    getPlayerVideoHTMLElement() {
-        return $(this.getPlayerIdentfiacationSelector + ` .${PlayerConstant_1.default.class_video}`)[0];
-    }
     addUnitEventListener() {
         $(this.getPlayerJQuerySelector()).resize(this.onPlayerResizie);
         this.getKokoroVideoManager.addEventListener(PlayerControlEvent_1.default.PAUSE, (event) => {
@@ -85,6 +81,9 @@ class TerminusEstPlayer {
         this.getKokoroVideoManager.addEventListener(PlayerControlEvent_1.default.TIMEUPDATE, (event) => {
             console.log(event.type, event.data);
         });
+    }
+    getPlayerJQuerySelector() {
+        return $(this.getPlayerIdentfiacationSelector)[0];
     }
     onPlayerResizie() {
         console.log('onPlayerResize:', $(this.getPlayerJQuerySelector()).width(), $(this.getPlayerJQuerySelector()).height());

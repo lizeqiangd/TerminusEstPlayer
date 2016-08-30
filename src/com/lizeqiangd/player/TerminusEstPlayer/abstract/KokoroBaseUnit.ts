@@ -1,27 +1,38 @@
+export default class KokoroBaseUnit {
+    protected _element: any;
 
-export default class KokoroBaseUnit{
-    protected _element:any;
-
-    constructor(){
+    constructor() {
 
     }
 
-    addEventListener(event_type:string,handler:Function){
+    addEventListener(event_type: string, handler: Function) {
 
-        this._element.addEventListener(event_type,handler);
+        this._element.addEventListener(event_type, handler);
     }
 
-    removeEventListener(event_type:string,handler:Function){
+    removeEventListener(event_type: string, handler: Function) {
 
-        this._element.removeEventListener(event_type,handler);
+        this._element.removeEventListener(event_type, handler);
     }
 
-    dispatchEvent(e:Event){
+    dispatchEvent(e: Event) {
         this._element.dispatchEvent(e);
     }
 
-    get element():HTMLElement{
+    display(value: boolean) {
+        if (value) {
+            $(this.element).fadeIn();
+        } else {
+            $(this.element).fadeOut();
+        }
+    }
+
+    get element(): HTMLElement {
         return this._element;
+    }
+
+    get getJQuerySelector():JQuery{
+        return $(this.element);
     }
 
 }

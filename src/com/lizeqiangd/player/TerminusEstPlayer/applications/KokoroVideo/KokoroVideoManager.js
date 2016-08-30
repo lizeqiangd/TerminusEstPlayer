@@ -1,11 +1,14 @@
 "use strict";
 const PlayerControlEvent_1 = require('./../../events/PlayerControlEvent');
 const KokoroBaseUnit_1 = require('./../../abstract/KokoroBaseUnit');
+const PlayerConstant_1 = require('./../../system/constant/PlayerConstant');
 class KokoroVideoManager extends KokoroBaseUnit_1.default {
-    constructor(video) {
+    constructor() {
         super();
         this.state = KokoroVideoManager.INIT;
-        this._element = video;
+        this._element = document.createElement('video');
+        this._element.className = PlayerConstant_1.default.class_video;
+        this._element.setAttribute('autoplay', false);
         this.addUIListener(this.element);
     }
     addUIListener(video_obj) {
@@ -30,9 +33,16 @@ class KokoroVideoManager extends KokoroBaseUnit_1.default {
             this.dispatchEvent(new PlayerControlEvent_1.default(PlayerControlEvent_1.default.SEEK, this.time));
         };
         video_obj.onvolumechange = () => {
-            // debugger;
             this.dispatchEvent(new PlayerControlEvent_1.default(PlayerControlEvent_1.default.VOLUMECHANGE, this.time));
         };
+        this.addEventListener('click', (e) => {
+            if (this.state == KokoroVideoManager.PAUSE) {
+                this.play();
+            }
+            else {
+                this.pause();
+            }
+        });
     }
     play() {
         this.element.play();
@@ -41,7 +51,7 @@ class KokoroVideoManager extends KokoroBaseUnit_1.default {
         this.element.pause();
     }
     load(value) {
-        this.element.innerHTML = `<source src=${value}/>`;
+        this.element.innerHTML = `<source src=${value}>`;
         this.element.load();
     }
     volume(value) {

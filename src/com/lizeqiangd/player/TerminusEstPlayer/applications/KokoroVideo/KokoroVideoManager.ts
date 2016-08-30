@@ -1,16 +1,20 @@
 import PlayerControlEvent from './../../events/PlayerControlEvent';
 import KokoroBaseUnit from './../../abstract/KokoroBaseUnit'
+import PlayerConstant from './../../system/constant/PlayerConstant';
 
 export default class KokoroVideoManager extends KokoroBaseUnit {
     static INIT: string = 'state_init';
     static PLAY: string = 'state_play';
     static PAUSE: string = 'state_pause';
 
-    state: string = KokoroVideoManager        .INIT;
+    state: string = KokoroVideoManager.INIT;
 
-    constructor(video: HTMLVideoElement) {
+    constructor() {
         super();
-        this._element = video;
+        this._element = document.createElement('video');
+        this._element.className = PlayerConstant.class_video;
+        this._element.setAttribute('autoplay', false);
+
         this.addUIListener(this.element);
     }
 
@@ -18,43 +22,43 @@ export default class KokoroVideoManager extends KokoroBaseUnit {
     addUIListener(video_obj: HTMLVideoElement) {
         video_obj.ontimeupdate = ()=> {
             this.dispatchEvent(new PlayerControlEvent(PlayerControlEvent.TIMEUPDATE, this.time));
-
         }
 
         video_obj.onloadeddata = ()=> {
             this.dispatchEvent(new PlayerControlEvent(PlayerControlEvent.LOADEDDATA, this.time));
-
         }
 
         video_obj.oncanplay = ()=> {
             this.dispatchEvent(new PlayerControlEvent(PlayerControlEvent.CANPLAY, this.time));
-
         }
 
         video_obj.onpause = ()=> {
             this.state = KokoroVideoManager.PAUSE;
             this.dispatchEvent(new PlayerControlEvent(PlayerControlEvent.PAUSE, this.time));
-
         }
 
         video_obj.onplay = ()=> {
             this.state = KokoroVideoManager.PLAY;
             this.dispatchEvent(new PlayerControlEvent(PlayerControlEvent.PLAY, this.time));
-
         }
 
         video_obj.onseeking = ()=> {
             this.dispatchEvent(new PlayerControlEvent(PlayerControlEvent.SEEK, this.time));
-
         }
 
         video_obj.onvolumechange = ()=> {
-            // debugger;
             this.dispatchEvent(new PlayerControlEvent(PlayerControlEvent.VOLUMECHANGE, this.time));
-
-
         }
+
+        this.addEventListener('click', (e: Event)=> {
+            if (this.state == KokoroVideoManager.PAUSE) {
+                this.play();
+            } else {
+                this.pause();
+            }
+        });
     }
+
 
     play() {
         this.element.play();
@@ -65,7 +69,7 @@ export default class KokoroVideoManager extends KokoroBaseUnit {
     }
 
     load(value: string) {
-        this.element.innerHTML = `<source src=${value}/>`
+        this.element.innerHTML = `<source src=${value}>`
         this.element.load();
 
     }

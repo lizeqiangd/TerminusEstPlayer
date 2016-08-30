@@ -53,27 +53,29 @@
 	//css loader
 	__webpack_require__(5);
 	//class loader
-	const PlayerConstant_1 = __webpack_require__(12);
+	const PlayerConstant_1 = __webpack_require__(1);
 	const KokoroVideoManager_1 = __webpack_require__(2);
-	const LeCloudVideoAPI_1 = __webpack_require__(9);
-	const PlayerControlEvent_1 = __webpack_require__(11);
+	const LeCloudVideoAPI_1 = __webpack_require__(8);
+	const PlayerControlEvent_1 = __webpack_require__(4);
+	const DateTimeUtils_1 = __webpack_require__(11);
+	const KokoroVideoController_1 = __webpack_require__(12);
 	class TerminusEstPlayer {
 	    constructor(_player_identfication) {
 	        this.player_identfication = '';
 	        this.player_identfication = _player_identfication;
-	        this.createPlayerElements();
-	        this.kvm = new KokoroVideoManager_1.default(this.getPlayerVideoHTMLElement());
-	        this.lecloud = new LeCloudVideoAPI_1.default();
-	        this.addUnitEventListener();
-	        $(this.getPlayerIdentfiacationSelector).height(450);
-	        $(this.getPlayerIdentfiacationSelector).width(800);
-	        return this;
-	    }
-	    createPlayerElements() {
 	        let player = this.getPlayerJQuerySelector();
-	        player.innerHTML += `<video class=${PlayerConstant_1.default.class_video} autoplay="false"></video>`;
-	        player.innerHTML += `<div class=${PlayerConstant_1.default.class_comment}></div>`;
-	        player.innerHTML += `<div class=${PlayerConstant_1.default.class_control}></div>`;
+	        $(player).height(450);
+	        $(player).width(800);
+	        $(player).addClass(PlayerConstant_1.default.class_player);
+	        this.kvm = new KokoroVideoManager_1.default();
+	        player.appendChild(this.kvm.element);
+	        this.kvc = new KokoroVideoController_1.default();
+	        player.appendChild(this.kvc.element);
+	        this.addUnitEventListener();
+	        console.log(DateTimeUtils_1.default.getDate());
+	        console.log(DateTimeUtils_1.default.formatSecond(999999));
+	        this.lecloud = new LeCloudVideoAPI_1.default();
+	        return this;
 	    }
 	    loadLeCloudVideo(vu) {
 	        this.lecloud.get_video_list_proxy(vu, (data) => {
@@ -105,12 +107,6 @@
 	            }
 	        }
 	    }
-	    getPlayerJQuerySelector() {
-	        return $(this.getPlayerIdentfiacationSelector)[0];
-	    }
-	    getPlayerVideoHTMLElement() {
-	        return $(this.getPlayerIdentfiacationSelector + ` .${PlayerConstant_1.default.class_video}`)[0];
-	    }
 	    addUnitEventListener() {
 	        $(this.getPlayerJQuerySelector()).resize(this.onPlayerResizie);
 	        this.getKokoroVideoManager.addEventListener(PlayerControlEvent_1.default.PAUSE, (event) => {
@@ -132,6 +128,9 @@
 	            console.log(event.type, event.data);
 	        });
 	    }
+	    getPlayerJQuerySelector() {
+	        return $(this.getPlayerIdentfiacationSelector)[0];
+	    }
 	    onPlayerResizie() {
 	        console.log('onPlayerResize:', $(this.getPlayerJQuerySelector()).width(), $(this.getPlayerJQuerySelector()).height());
 	    }
@@ -146,18 +145,50 @@
 	//# sourceMappingURL=TerminusEstPlayer.js.map
 
 /***/ },
-/* 1 */,
+/* 1 */
+/***/ function(module, exports) {
+
+	"use strict";
+	/**
+	 * Created by lizeq on 8/22/2016.
+	 */
+	class PlayerConstant {
+	}
+	PlayerConstant.prefixed = 'tep_';
+	PlayerConstant.class_player = PlayerConstant.prefixed + 'player';
+	PlayerConstant.class_video = PlayerConstant.prefixed + 'video';
+	PlayerConstant.class_comment = PlayerConstant.prefixed + 'comment';
+	PlayerConstant.class_KokoroVideoController = PlayerConstant.prefixed + 'kvc';
+	PlayerConstant.class_VideoControlButtonManager = PlayerConstant.prefixed + 'vcbm';
+	PlayerConstant.class_videomask = PlayerConstant.prefixed + 'videomask';
+	PlayerConstant.class_btn_KokoroStateUI = PlayerConstant.prefixed + 'btn_KokoroStateUI';
+	PlayerConstant.class_btn_KokoroUI = PlayerConstant.prefixed + 'btn_KokoroUI';
+	PlayerConstant.class_sld_general = PlayerConstant.prefixed + 'sld_general';
+	PlayerConstant.class_sld_general_pointer = PlayerConstant.prefixed + 'sld_general_pointer';
+	PlayerConstant.class_sld_general_background = PlayerConstant.prefixed + 'sld_general_background';
+	PlayerConstant.class_sld_general_buffer = PlayerConstant.prefixed + 'sld_general_buffer';
+	PlayerConstant.class_sld_general_play = PlayerConstant.prefixed + 'sld_general_play';
+	PlayerConstant.class_sld_general_videojj = PlayerConstant.prefixed + 'sld_general_videojj';
+	PlayerConstant.player_videolist = PlayerConstant.prefixed + 'videolist';
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = PlayerConstant;
+	//# sourceMappingURL=PlayerConstant.js.map
+
+/***/ },
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	const PlayerControlEvent_1 = __webpack_require__(11);
+	const PlayerControlEvent_1 = __webpack_require__(4);
 	const KokoroBaseUnit_1 = __webpack_require__(7);
+	const PlayerConstant_1 = __webpack_require__(1);
 	class KokoroVideoManager extends KokoroBaseUnit_1.default {
-	    constructor(video) {
+	    constructor() {
 	        super();
 	        this.state = KokoroVideoManager.INIT;
-	        this._element = video;
+	        this._element = document.createElement('video');
+	        this._element.className = PlayerConstant_1.default.class_video;
+	        this._element.setAttribute('autoplay', false);
 	        this.addUIListener(this.element);
 	    }
 	    addUIListener(video_obj) {
@@ -182,9 +213,16 @@
 	            this.dispatchEvent(new PlayerControlEvent_1.default(PlayerControlEvent_1.default.SEEK, this.time));
 	        };
 	        video_obj.onvolumechange = () => {
-	            // debugger;
 	            this.dispatchEvent(new PlayerControlEvent_1.default(PlayerControlEvent_1.default.VOLUMECHANGE, this.time));
 	        };
+	        this.addEventListener('click', (e) => {
+	            if (this.state == KokoroVideoManager.PAUSE) {
+	                this.play();
+	            }
+	            else {
+	                this.pause();
+	            }
+	        });
 	    }
 	    play() {
 	        this.element.play();
@@ -193,7 +231,7 @@
 	        this.element.pause();
 	    }
 	    load(value) {
-	        this.element.innerHTML = `<source src=${value}/>`;
+	        this.element.innerHTML = `<source src=${value}>`;
 	        this.element.load();
 	    }
 	    volume(value) {
@@ -251,12 +289,12 @@
 /* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(4)();
+	exports = module.exports = __webpack_require__(14)();
 	// imports
 
 
 	// module
-	exports.push([module.id, ".tep_video{\r\n    position: relative;\r\n    overflow: hidden;\r\n    width: 100%;\r\n}\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n/*.TerminusEstPlayer {*/\r\n    /**/\r\n    /*position: relative;*/\r\n    /*overflow: hidden;*/\r\n/*}*/\r\n\r\n.video_content {\r\n    width: 100%;\r\n    height: 100%;\r\n    z-index: 0;\r\n}\r\n\r\n.controller {\r\n    width: 100%;\r\n    height: 70px;\r\n\r\n    position: absolute;\r\n    bottom: 0;\r\n    left: 0;\r\n    right: 0;\r\n    z-index: 10;\r\n}\r\n\r\n.background {\r\n    position: absolute;\r\n    bottom: 0;\r\n    left: 0;\r\n    right: 0;\r\n    height: 100%;\r\n    opacity: .5;\r\n    background-color: #000000;\r\n    z-index: 11;\r\n\r\n}\r\n\r\n.KokoroPlayerControllerManager {\r\n    position: absolute;\r\n    top: 0;\r\n    bottom: 0;\r\n    left: 0;\r\n    right: 0;\r\n    height: 100%;\r\n    z-index: 12;\r\n}\r\n\r\n.kpcm_left {\r\n    float: left;\r\n}\r\n\r\n.kpcm_right {\r\n    float: right;\r\n}\r\n\r\n.kpcm_controller {\r\n    position: absolute;\r\n    width: 100%;\r\n    top: 10px;\r\n    height: 30px;\r\n}\r\n\r\n.player_controller_unit {\r\n    display: inline;\r\n    margin-left: 10px;\r\n    margin-right: 10px;\r\n    height: 100%;\r\n    vertical-align: middle;\r\n}\r\n\r\n.progress_bar {\r\n    position: relative;\r\n    width: 100%;\r\n    height: 5px;\r\n    top: 0;\r\n    left: 0;\r\n    background: #2b2b2b;\r\n    opacity: 1;\r\n\r\n}\r\n\r\n.buffer_bar {\r\n    position: absolute;\r\n    height: 5px;\r\n    top: 0;\r\n    background: #ffffff;\r\n    opacity: .8;\r\n\r\n}\r\n\r\n.play_bar {\r\n    position: absolute;\r\n    width: 0;\r\n    height: 5px;\r\n    top: 0;\r\n    left: 0;\r\n    background: #3399ff;\r\n    opacity: .8;\r\n\r\n}\r\n\r\n.play_time {\r\n    padding-top: 7px;\r\n    color: #ffffff;\r\n    user-select: none;\r\n    -webkit-user-select: none;\r\n    -moz-user-select: none;\r\n    -ms-user-select: none;\r\n}\r\n\r\n.VideoMouseMask {\r\n    position: absolute;\r\n    top: 0;\r\n    left: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n}\r\n\r\n.controller_panels {\r\n    position: absolute;\r\n    top: -5px;\r\n}\r\n\r\n.buffer_icon {\r\n    margin-left: -30px;\r\n    margin-top: -30px;\r\n    width: 60px;\r\n    height: 60px;\r\n    top: 50%;\r\n    left: 50%;\r\n}\r\n\r\n.player_controller_button {\r\n    background: url(" + __webpack_require__(6) + ");\r\n    width: 30px;\r\n    height: 30px;\r\n}\r\n\r\n.play_icon {\r\n    position: absolute;\r\n    background-position: -150px -0;\r\n    width: 80px;\r\n    height: 80px;\r\n    bottom: 90px;\r\n    right: 20px;\r\n}\r\n\r\n.fullscreen_button {\r\n    background-position: -90px -0;\r\n}\r\n\r\n.volume_button {\r\n    background-position: -0px -0;\r\n\r\n}\r\n\r\n.comment_button {\r\n    background-position: -30px -30px;\r\n    width: 60px;\r\n\r\n}\r\n\r\n.play_state1 {\r\n    background-position: -0px -60px;\r\n}\r\n\r\n.play_state0 {\r\n    background-position: -30px -60px;\r\n}\r\n\r\n.resolution_button {\r\n    padding-top: 5px;\r\n    user-select: none;\r\n    -webkit-user-select: none;\r\n    -moz-user-select: none;\r\n    -ms-user-select: none;\r\n    width: 35px;\r\n    color: #ffffff;\r\n    background: none;\r\n}\r\n\r\n.resolution_button_item {\r\n    color: #ffffff;\r\n    margin: 10px;\r\n    word-break: keep-all;\r\n    /*width: 30px; */\r\n    -webkit-user-select: none;\r\n    -moz-user-select: none;\r\n    -ms-user-select: none;\r\n}\r\n\r\n.KokoroBaseUnit {\r\n    position: absolute;\r\n    background-color: #000000;\r\n    opacity: .8;\r\n    /*border-radius: 5px;*/\r\n    margin: 0;\r\n    width: auto;\r\n    height: auto;\r\n    bottom: 100%;\r\n\r\n}\r\n\r\n.panel_vector {\r\n    width: 0;\r\n    height: 0;\r\n    top: 4px;\r\n    opacity: .8;\r\n    border-width: 4px 4px 0;\r\n    border-style: solid;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    border-color: #000000 transparent transparent;\r\n    position: relative;\r\n}\r\n\r\n@-webkit-keyframes uil-default-anim {\r\n    0% {\r\n        opacity: 1\r\n    }\r\n    100% {\r\n        opacity: 0\r\n    }\r\n}\r\n\r\n@keyframes uil-default-anim {\r\n    0% {\r\n        opacity: 1\r\n    }\r\n    100% {\r\n        opacity: 0\r\n    }\r\n}\r\n\r\n.uil-default-css > div:nth-of-type(1) {\r\n    -webkit-animation: uil-default-anim 1s linear infinite;\r\n    animation: uil-default-anim 1s linear infinite;\r\n    -webkit-animation-delay: -0.5s;\r\n    animation-delay: -0.5s;\r\n}\r\n\r\n.uil-default-css {\r\n    position: relative;\r\n    background: none;\r\n    width: 200px;\r\n    height: 200px;\r\n}\r\n\r\n.uil-default-css > div:nth-of-type(2) {\r\n    -webkit-animation: uil-default-anim 1s linear infinite;\r\n    animation: uil-default-anim 1s linear infinite;\r\n    -webkit-animation-delay: -0.4166666666666667s;\r\n    animation-delay: -0.4166666666666667s;\r\n}\r\n\r\n.uil-default-css {\r\n    position: relative;\r\n    background: none;\r\n    width: 200px;\r\n    height: 200px;\r\n}\r\n\r\n.uil-default-css > div:nth-of-type(3) {\r\n    -webkit-animation: uil-default-anim 1s linear infinite;\r\n    animation: uil-default-anim 1s linear infinite;\r\n    -webkit-animation-delay: -0.33333333333333337s;\r\n    animation-delay: -0.33333333333333337s;\r\n}\r\n\r\n.uil-default-css {\r\n    position: relative;\r\n    background: none;\r\n    width: 200px;\r\n    height: 200px;\r\n}\r\n\r\n.uil-default-css > div:nth-of-type(4) {\r\n    -webkit-animation: uil-default-anim 1s linear infinite;\r\n    animation: uil-default-anim 1s linear infinite;\r\n    -webkit-animation-delay: -0.25s;\r\n    animation-delay: -0.25s;\r\n}\r\n\r\n.uil-default-css {\r\n    position: relative;\r\n    background: none;\r\n    width: 200px;\r\n    height: 200px;\r\n}\r\n\r\n.uil-default-css > div:nth-of-type(5) {\r\n    -webkit-animation: uil-default-anim 1s linear infinite;\r\n    animation: uil-default-anim 1s linear infinite;\r\n    -webkit-animation-delay: -0.16666666666666669s;\r\n    animation-delay: -0.16666666666666669s;\r\n}\r\n\r\n.uil-default-css {\r\n    position: relative;\r\n    background: none;\r\n    width: 200px;\r\n    height: 200px;\r\n}\r\n\r\n.uil-default-css > div:nth-of-type(6) {\r\n    -webkit-animation: uil-default-anim 1s linear infinite;\r\n    animation: uil-default-anim 1s linear infinite;\r\n    -webkit-animation-delay: -0.08333333333333331s;\r\n    animation-delay: -0.08333333333333331s;\r\n}\r\n\r\n.uil-default-css {\r\n    position: relative;\r\n    background: none;\r\n    width: 200px;\r\n    height: 200px;\r\n}\r\n\r\n.uil-default-css > div:nth-of-type(7) {\r\n    -webkit-animation: uil-default-anim 1s linear infinite;\r\n    animation: uil-default-anim 1s linear infinite;\r\n    -webkit-animation-delay: 0s;\r\n    animation-delay: 0s;\r\n}\r\n\r\n.uil-default-css {\r\n    position: relative;\r\n    background: none;\r\n    width: 200px;\r\n    height: 200px;\r\n}\r\n\r\n.uil-default-css > div:nth-of-type(8) {\r\n    -webkit-animation: uil-default-anim 1s linear infinite;\r\n    animation: uil-default-anim 1s linear infinite;\r\n    -webkit-animation-delay: 0.08333333333333337s;\r\n    animation-delay: 0.08333333333333337s;\r\n}\r\n\r\n.uil-default-css {\r\n    position: relative;\r\n    background: none;\r\n    width: 200px;\r\n    height: 200px;\r\n}\r\n\r\n.uil-default-css > div:nth-of-type(9) {\r\n    -webkit-animation: uil-default-anim 1s linear infinite;\r\n    animation: uil-default-anim 1s linear infinite;\r\n    -webkit-animation-delay: 0.16666666666666663s;\r\n    animation-delay: 0.16666666666666663s;\r\n}\r\n\r\n.uil-default-css {\r\n    position: relative;\r\n    background: none;\r\n    width: 200px;\r\n    height: 200px;\r\n}\r\n\r\n.uil-default-css > div:nth-of-type(10) {\r\n    -webkit-animation: uil-default-anim 1s linear infinite;\r\n    animation: uil-default-anim 1s linear infinite;\r\n    -webkit-animation-delay: 0.25s;\r\n    animation-delay: 0.25s;\r\n}\r\n\r\n.uil-default-css {\r\n    position: relative;\r\n    background: none;\r\n    width: 200px;\r\n    height: 200px;\r\n}\r\n\r\n.uil-default-css > div:nth-of-type(11) {\r\n    -webkit-animation: uil-default-anim 1s linear infinite;\r\n    animation: uil-default-anim 1s linear infinite;\r\n    -webkit-animation-delay: 0.33333333333333337s;\r\n    animation-delay: 0.33333333333333337s;\r\n}\r\n\r\n.uil-default-css {\r\n    position: relative;\r\n    background: none;\r\n    width: 200px;\r\n    height: 200px;\r\n}\r\n\r\n.uil-default-css > div:nth-of-type(12) {\r\n    -webkit-animation: uil-default-anim 1s linear infinite;\r\n    animation: uil-default-anim 1s linear infinite;\r\n    -webkit-animation-delay: 0.41666666666666663s;\r\n    animation-delay: 0.41666666666666663s;\r\n}\r\n\r\n.uil-default-css {\r\n    position: relative;\r\n    background: none;\r\n    width: 200px;\r\n    height: 200px;\r\n}", ""]);
+	exports.push([module.id, ".tep_video{\r\n    /*position: relative;*/\r\n    overflow: hidden;\r\n    width: 100%;\r\n}\r\n\r\n.tep_player{\r\n    position: relative;\r\n}\r\n\r\n.tep_kvc {\r\n    width: 100%;\r\n    height: 70px;\r\n    opacity: .5;\r\n    background-color: #000000;\r\n    position: absolute;\r\n    bottom: 0;\r\n    left: 0;\r\n    right: 0;\r\n    z-index: 10;\r\n}\r\n\r\n\r\n\r\n\r\n\r\n\r\n.KokoroPlayerControllerManager {\r\n    position: absolute;\r\n    top: 0;\r\n    bottom: 0;\r\n    left: 0;\r\n    right: 0;\r\n    height: 100%;\r\n    z-index: 12;\r\n}\r\n\r\n\r\n\r\n\r\n/*.TerminusEstPlayer {*/\r\n    /**/\r\n    /*position: relative;*/\r\n    /*overflow: hidden;*/\r\n/*}*/\r\n\r\n.video_content {\r\n    width: 100%;\r\n    height: 100%;\r\n    z-index: 0;\r\n}\r\n\r\n\r\n\r\n\r\n.kpcm_left {\r\n    float: left;\r\n}\r\n\r\n.kpcm_right {\r\n    float: right;\r\n}\r\n\r\n.kpcm_controller {\r\n    position: absolute;\r\n    width: 100%;\r\n    top: 10px;\r\n    height: 30px;\r\n}\r\n\r\n.player_controller_unit {\r\n    display: inline;\r\n    margin-left: 10px;\r\n    margin-right: 10px;\r\n    height: 100%;\r\n    vertical-align: middle;\r\n}\r\n\r\n.progress_bar {\r\n    position: relative;\r\n    width: 100%;\r\n    height: 5px;\r\n    top: 0;\r\n    left: 0;\r\n    background: #2b2b2b;\r\n    opacity: 1;\r\n\r\n}\r\n\r\n.buffer_bar {\r\n    position: absolute;\r\n    height: 5px;\r\n    top: 0;\r\n    background: #ffffff;\r\n    opacity: .8;\r\n\r\n}\r\n\r\n.play_bar {\r\n    position: absolute;\r\n    width: 0;\r\n    height: 5px;\r\n    top: 0;\r\n    left: 0;\r\n    background: #3399ff;\r\n    opacity: .8;\r\n\r\n}\r\n\r\n.play_time {\r\n    padding-top: 7px;\r\n    color: #ffffff;\r\n    user-select: none;\r\n    -webkit-user-select: none;\r\n    -moz-user-select: none;\r\n    -ms-user-select: none;\r\n}\r\n\r\n.VideoMouseMask {\r\n    position: absolute;\r\n    top: 0;\r\n    left: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n}\r\n\r\n.controller_panels {\r\n    position: absolute;\r\n    top: -5px;\r\n}\r\n\r\n.buffer_icon {\r\n    margin-left: -30px;\r\n    margin-top: -30px;\r\n    width: 60px;\r\n    height: 60px;\r\n    top: 50%;\r\n    left: 50%;\r\n}\r\n\r\n.player_controller_button {\r\n    background: url(" + __webpack_require__(6) + ");\r\n    width: 30px;\r\n    height: 30px;\r\n}\r\n\r\n.play_icon {\r\n    position: absolute;\r\n    background-position: -150px -0;\r\n    width: 80px;\r\n    height: 80px;\r\n    bottom: 90px;\r\n    right: 20px;\r\n}\r\n\r\n.fullscreen_button {\r\n    background-position: -90px -0;\r\n}\r\n\r\n.volume_button {\r\n    background-position: -0px -0;\r\n\r\n}\r\n\r\n.comment_button {\r\n    background-position: -30px -30px;\r\n    width: 60px;\r\n\r\n}\r\n\r\n.play_state1 {\r\n    background-position: -0px -60px;\r\n}\r\n\r\n.play_state0 {\r\n    background-position: -30px -60px;\r\n}\r\n\r\n.resolution_button {\r\n    padding-top: 5px;\r\n    user-select: none;\r\n    -webkit-user-select: none;\r\n    -moz-user-select: none;\r\n    -ms-user-select: none;\r\n    width: 35px;\r\n    color: #ffffff;\r\n    background: none;\r\n}\r\n\r\n.resolution_button_item {\r\n    color: #ffffff;\r\n    margin: 10px;\r\n    word-break: keep-all;\r\n    /*width: 30px; */\r\n    -webkit-user-select: none;\r\n    -moz-user-select: none;\r\n    -ms-user-select: none;\r\n}\r\n\r\n.KokoroBaseUnit {\r\n    position: absolute;\r\n    background-color: #000000;\r\n    opacity: .8;\r\n    /*border-radius: 5px;*/\r\n    margin: 0;\r\n    width: auto;\r\n    height: auto;\r\n    bottom: 100%;\r\n\r\n}\r\n\r\n.panel_vector {\r\n    width: 0;\r\n    height: 0;\r\n    top: 4px;\r\n    opacity: .8;\r\n    border-width: 4px 4px 0;\r\n    border-style: solid;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    border-color: #000000 transparent transparent;\r\n    position: relative;\r\n}\r\n\r\n@-webkit-keyframes uil-default-anim {\r\n    0% {\r\n        opacity: 1\r\n    }\r\n    100% {\r\n        opacity: 0\r\n    }\r\n}\r\n\r\n@keyframes uil-default-anim {\r\n    0% {\r\n        opacity: 1\r\n    }\r\n    100% {\r\n        opacity: 0\r\n    }\r\n}\r\n\r\n.uil-default-css > div:nth-of-type(1) {\r\n    -webkit-animation: uil-default-anim 1s linear infinite;\r\n    animation: uil-default-anim 1s linear infinite;\r\n    -webkit-animation-delay: -0.5s;\r\n    animation-delay: -0.5s;\r\n}\r\n\r\n.uil-default-css {\r\n    position: relative;\r\n    background: none;\r\n    width: 200px;\r\n    height: 200px;\r\n}\r\n\r\n.uil-default-css > div:nth-of-type(2) {\r\n    -webkit-animation: uil-default-anim 1s linear infinite;\r\n    animation: uil-default-anim 1s linear infinite;\r\n    -webkit-animation-delay: -0.4166666666666667s;\r\n    animation-delay: -0.4166666666666667s;\r\n}\r\n\r\n.uil-default-css {\r\n    position: relative;\r\n    background: none;\r\n    width: 200px;\r\n    height: 200px;\r\n}\r\n\r\n.uil-default-css > div:nth-of-type(3) {\r\n    -webkit-animation: uil-default-anim 1s linear infinite;\r\n    animation: uil-default-anim 1s linear infinite;\r\n    -webkit-animation-delay: -0.33333333333333337s;\r\n    animation-delay: -0.33333333333333337s;\r\n}\r\n\r\n.uil-default-css {\r\n    position: relative;\r\n    background: none;\r\n    width: 200px;\r\n    height: 200px;\r\n}\r\n\r\n.uil-default-css > div:nth-of-type(4) {\r\n    -webkit-animation: uil-default-anim 1s linear infinite;\r\n    animation: uil-default-anim 1s linear infinite;\r\n    -webkit-animation-delay: -0.25s;\r\n    animation-delay: -0.25s;\r\n}\r\n\r\n.uil-default-css {\r\n    position: relative;\r\n    background: none;\r\n    width: 200px;\r\n    height: 200px;\r\n}\r\n\r\n.uil-default-css > div:nth-of-type(5) {\r\n    -webkit-animation: uil-default-anim 1s linear infinite;\r\n    animation: uil-default-anim 1s linear infinite;\r\n    -webkit-animation-delay: -0.16666666666666669s;\r\n    animation-delay: -0.16666666666666669s;\r\n}\r\n\r\n.uil-default-css {\r\n    position: relative;\r\n    background: none;\r\n    width: 200px;\r\n    height: 200px;\r\n}\r\n\r\n.uil-default-css > div:nth-of-type(6) {\r\n    -webkit-animation: uil-default-anim 1s linear infinite;\r\n    animation: uil-default-anim 1s linear infinite;\r\n    -webkit-animation-delay: -0.08333333333333331s;\r\n    animation-delay: -0.08333333333333331s;\r\n}\r\n\r\n.uil-default-css {\r\n    position: relative;\r\n    background: none;\r\n    width: 200px;\r\n    height: 200px;\r\n}\r\n\r\n.uil-default-css > div:nth-of-type(7) {\r\n    -webkit-animation: uil-default-anim 1s linear infinite;\r\n    animation: uil-default-anim 1s linear infinite;\r\n    -webkit-animation-delay: 0s;\r\n    animation-delay: 0s;\r\n}\r\n\r\n.uil-default-css {\r\n    position: relative;\r\n    background: none;\r\n    width: 200px;\r\n    height: 200px;\r\n}\r\n\r\n.uil-default-css > div:nth-of-type(8) {\r\n    -webkit-animation: uil-default-anim 1s linear infinite;\r\n    animation: uil-default-anim 1s linear infinite;\r\n    -webkit-animation-delay: 0.08333333333333337s;\r\n    animation-delay: 0.08333333333333337s;\r\n}\r\n\r\n.uil-default-css {\r\n    position: relative;\r\n    background: none;\r\n    width: 200px;\r\n    height: 200px;\r\n}\r\n\r\n.uil-default-css > div:nth-of-type(9) {\r\n    -webkit-animation: uil-default-anim 1s linear infinite;\r\n    animation: uil-default-anim 1s linear infinite;\r\n    -webkit-animation-delay: 0.16666666666666663s;\r\n    animation-delay: 0.16666666666666663s;\r\n}\r\n\r\n.uil-default-css {\r\n    position: relative;\r\n    background: none;\r\n    width: 200px;\r\n    height: 200px;\r\n}\r\n\r\n.uil-default-css > div:nth-of-type(10) {\r\n    -webkit-animation: uil-default-anim 1s linear infinite;\r\n    animation: uil-default-anim 1s linear infinite;\r\n    -webkit-animation-delay: 0.25s;\r\n    animation-delay: 0.25s;\r\n}\r\n\r\n.uil-default-css {\r\n    position: relative;\r\n    background: none;\r\n    width: 200px;\r\n    height: 200px;\r\n}\r\n\r\n.uil-default-css > div:nth-of-type(11) {\r\n    -webkit-animation: uil-default-anim 1s linear infinite;\r\n    animation: uil-default-anim 1s linear infinite;\r\n    -webkit-animation-delay: 0.33333333333333337s;\r\n    animation-delay: 0.33333333333333337s;\r\n}\r\n\r\n.uil-default-css {\r\n    position: relative;\r\n    background: none;\r\n    width: 200px;\r\n    height: 200px;\r\n}\r\n\r\n.uil-default-css > div:nth-of-type(12) {\r\n    -webkit-animation: uil-default-anim 1s linear infinite;\r\n    animation: uil-default-anim 1s linear infinite;\r\n    -webkit-animation-delay: 0.41666666666666663s;\r\n    animation-delay: 0.41666666666666663s;\r\n}\r\n\r\n.uil-default-css {\r\n    position: relative;\r\n    background: none;\r\n    width: 200px;\r\n    height: 200px;\r\n}", ""]);
 
 	// exports
 
@@ -265,57 +303,64 @@
 /* 4 */
 /***/ function(module, exports) {
 
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	// css base code, injected by the css-loader
-	module.exports = function() {
-		var list = [];
-
-		// return the list of modules as css string
-		list.toString = function toString() {
-			var result = [];
-			for(var i = 0; i < this.length; i++) {
-				var item = this[i];
-				if(item[2]) {
-					result.push("@media " + item[2] + "{" + item[1] + "}");
-				} else {
-					result.push(item[1]);
-				}
-			}
-			return result.join("");
-		};
-
-		// import a list of modules into the list
-		list.i = function(modules, mediaQuery) {
-			if(typeof modules === "string")
-				modules = [[null, modules, ""]];
-			var alreadyImportedModules = {};
-			for(var i = 0; i < this.length; i++) {
-				var id = this[i][0];
-				if(typeof id === "number")
-					alreadyImportedModules[id] = true;
-			}
-			for(i = 0; i < modules.length; i++) {
-				var item = modules[i];
-				// skip already imported module
-				// this implementation is not 100% perfect for weird media query combinations
-				//  when a module is imported multiple times with different media queries.
-				//  I hope this will never occur (Hey this way we have smaller bundles)
-				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-					if(mediaQuery && !item[2]) {
-						item[2] = mediaQuery;
-					} else if(mediaQuery) {
-						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-					}
-					list.push(item);
-				}
-			}
-		};
-		return list;
-	};
-
+	"use strict";
+	/**
+	 * Created by lizeq on 8/25/2016.
+	 */
+	class PlayerControlEvent extends Event {
+	    constructor(type, DispatchData = null) {
+	        super(type);
+	        /** 给设置所使用的 **/
+	        this._config_name = '';
+	        this.data = DispatchData;
+	    }
+	    /**
+	     * 如果是type是config. 则可以获取该值
+	     */
+	    get config_name() {
+	        return this._config_name == '' ? this.type : this._config_name;
+	    }
+	    set config_name(value) {
+	        this._config_name = value;
+	    }
+	    get config_data() {
+	        return this.data;
+	    }
+	}
+	PlayerControlEvent.CONTROL_PANEL_MOUSEOVER = 'control_panel_mouseover';
+	PlayerControlEvent.CONTROL_PANEL_MOUSEOUT = 'control_panel_mouseout';
+	/** HTML5专用事件. **/
+	PlayerControlEvent.TIMEUPDATE = 'player_timeupdate';
+	PlayerControlEvent.LOADEDDATA = 'player_loadeddata';
+	PlayerControlEvent.CANPLAY = 'player_canplay';
+	PlayerControlEvent.VOLUMECHANGE = 'player_volumechange';
+	/** 播放器控制抛出事件. **/
+	PlayerControlEvent.PAUSE = "player_pause";
+	PlayerControlEvent.PLAY = "player_play";
+	PlayerControlEvent.SEEK = "player_seek";
+	PlayerControlEvent.RESOLUTION_CHANGE = 'player_resolution_change';
+	PlayerControlEvent.SCREEN_TYPE_CHANGE = 'player_screen_type_change';
+	/** 弹幕相关事件 **/
+	PlayerControlEvent.COMMENT_STYLE_CHANGED = 'comment_style_changed';
+	PlayerControlEvent.ADVANCE_COMMENT = 'advance_comment';
+	PlayerControlEvent.COMMENT_SUBMIT = 'comment_submit';
+	/** 其他通用事件 **/
+	PlayerControlEvent.SHARE = 'share';
+	PlayerControlEvent.NEXT_VEDIO = 'next_video';
+	PlayerControlEvent.ADVANCE_COMMENT_CONFIG = 'advance_comment_config';
+	PlayerControlEvent.ADVANCE_CONFIG = 'advance_config';
+	PlayerControlEvent.BILIBILI_LOGO = 'bilibili_logo';
+	/** 推荐面板 **/
+	PlayerControlEvent.RECOMMEND_DING = 'recommend_ding';
+	PlayerControlEvent.RECOMMEND_COIN = 'recommend_coin';
+	PlayerControlEvent.RECOMMEND_FAVOURITE = 'recommend_favourite';
+	/** 播放器控件准备完成 **/
+	PlayerControlEvent.READY = 'player_ready';
+	/** 播放器关于信息 **/
+	PlayerControlEvent.ABOUT_PLAYER = 'about_player';
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = PlayerControlEvent;
+	//# sourceMappingURL=PlayerControlEvent.js.map
 
 /***/ },
 /* 5 */
@@ -327,7 +372,7 @@
 	var content = __webpack_require__(3);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(8)(content, {});
+	var update = __webpack_require__(9)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -366,8 +411,19 @@
 	    dispatchEvent(e) {
 	        this._element.dispatchEvent(e);
 	    }
+	    display(value) {
+	        if (value) {
+	            $(this.element).fadeIn();
+	        }
+	        else {
+	            $(this.element).fadeOut();
+	        }
+	    }
 	    get element() {
 	        return this._element;
+	    }
+	    get getJQuerySelector() {
+	        return $(this.element);
 	    }
 	}
 	Object.defineProperty(exports, "__esModule", { value: true });
@@ -376,6 +432,148 @@
 
 /***/ },
 /* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	/**
+	 * Created by lizeq on 8/23/2016.
+	 */
+	/// <reference path="./../utils/jquery.d.ts" />
+	const md5_1 = __webpack_require__(10);
+	const PlayerConstant_1 = __webpack_require__(1);
+	class LeCloudVideoAPI {
+	    constructor() {
+	        LeCloudVideoAPI.getInstance = this;
+	    }
+	    get_video_list_proxy(video_unique_id, callback) {
+	        this.callback = callback;
+	        LeCloudVideoAPI.vu = video_unique_id;
+	        $.ajax(LeCloudVideoAPI.LeCloudServerProxy + LeCloudVideoAPI.vu, {
+	            error: (what, status, error) => {
+	                this.onLoadFailed('loadVideoList from proxy failed!');
+	            },
+	            success: (data, status, what) => {
+	                // callback(data);
+	                this._final_data = data;
+	                window[PlayerConstant_1.default.player_videolist] = data;
+	                this.parse_videolist();
+	            },
+	        });
+	    }
+	    get_video_list(video_unique_id, callback) {
+	        this.callback = callback;
+	        LeCloudVideoAPI.vu = video_unique_id;
+	        this.get_timestamp(this.videolist);
+	    }
+	    /**
+	     * 获取乐视云的服务器时间戳. 如果获取失败,则使用本地时间代替.
+	     * @param    callback
+	     */
+	    get_timestamp(callback) {
+	        $.ajax(LeCloudVideoAPI.LeCloudServerTimeAPI + '?tn=' + Math.random(), {
+	            error: (what, status, error) => {
+	                let time = Math.floor(new Date().getTime() / 1000);
+	                this.onLoadFailed('load timestamp failed,use localtime:' + time);
+	                callback(time);
+	            },
+	            success: (data, status, what) => {
+	                callback(JSON.parse(data)['stime']);
+	            },
+	        });
+	    }
+	    get_videolist(time) {
+	        let _request_data = {};
+	        _request_data.video = LeCloudVideoAPI.vu;
+	        _request_data.vtype = 'm3u8';
+	        _request_data.ts = time;
+	        _request_data.user = LeCloudVideoAPI.api_user;
+	        _request_data.sign = LeCloudVideoAPI.getInstance.get_sign(_request_data);
+	        $.ajax(LeCloudVideoAPI.LeCloudServerAPI, {
+	            error: (what, status, error) => {
+	                this.onLoadFailed('getLeCloudVideoList');
+	            },
+	            success: (data, status, what) => {
+	                let obj = JSON.parse(data);
+	                if (obj['data'] && obj['data']['video_list']) {
+	                    obj = obj['data']['video_list'];
+	                    for (var name in obj) {
+	                        for (var i = 0; i < LeCloudVideoAPI.need_decode_key.length; i++)
+	                            obj[name][LeCloudVideoAPI.need_decode_key[i]] = window.btoa(obj[name][LeCloudVideoAPI.need_decode_key[i]]).toString();
+	                        this._final_data.push(obj[name]);
+	                    }
+	                }
+	                else {
+	                    console.log(obj);
+	                }
+	                window[PlayerConstant_1.default.player_videolist] = this._final_data;
+	                this.parse_videolist();
+	            },
+	            data: _request_data,
+	        });
+	    }
+	    parse_videolist() {
+	        let video_lists = JSON.parse(this._final_data);
+	        if (video_lists) {
+	            video_lists = video_lists['data'];
+	            if (video_lists) {
+	                video_lists = video_lists['video_list'];
+	                this.video_list = video_lists;
+	                this.callback(this.video_list);
+	                return;
+	            }
+	        }
+	        console.log('LeCloudVideoAPI.parse_videolist:failed!', this.data);
+	    }
+	    /**
+	     * 加密方式.弱智级别.毫无疑义.到底是为了防止谁使用?!?!?
+	     * @return
+	     */
+	    get_sign(_request_data) {
+	        var temp_arr = [];
+	        for (var name in _request_data)
+	            temp_arr.push(name + _request_data[name]);
+	        temp_arr.sort();
+	        return md5_1.default.hashStr(temp_arr.join('') + LeCloudVideoAPI.apr_secret); // .slice(8, 16 + 8);
+	    }
+	    getVideoResolutionURL(type) {
+	        for (let v in this.videolist) {
+	            let video_info = this.videolist[v];
+	            if (video_info['definition'] == type) {
+	                return video_info['main_url'];
+	            }
+	        }
+	        return '';
+	    }
+	    /**
+	     * 返回获取的数据
+	     * @returns {any}
+	     */
+	    get data() {
+	        return this._final_data;
+	    }
+	    /**
+	     * 返回解析过的视频数据.
+	     * @returns {any}
+	     */
+	    get videolist() {
+	        return this.video_list;
+	    }
+	    onLoadFailed(msg) {
+	        console.log('LeCloudVideoAPI.error:' + msg);
+	    }
+	}
+	LeCloudVideoAPI.LeCloudServerProxy = 'http://bilibili.moe/api/video/VideoAPI.php?api=LeCloudVideo&video_unique=';
+	LeCloudVideoAPI.LeCloudServerTimeAPI = 'http://api.letv.com/time';
+	LeCloudVideoAPI.LeCloudServerAPI = 'http://api.letvcloud.com/getplayurl.php';
+	LeCloudVideoAPI.need_decode_key = ['backup_url_1', 'backup_url_2', 'backup_url_3', 'main_url'];
+	LeCloudVideoAPI.api_user = '9a41a0d696';
+	LeCloudVideoAPI.apr_secret = 'f596293422b26d65d42c82daae6e0437';
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = LeCloudVideoAPI;
+	//# sourceMappingURL=LeCloudVideoAPI.js.map
+
+/***/ },
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -625,148 +823,6 @@
 			URL.revokeObjectURL(oldSrc);
 	}
 
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	/**
-	 * Created by lizeq on 8/23/2016.
-	 */
-	/// <reference path="./../utils/jquery.d.ts" />
-	const md5_1 = __webpack_require__(10);
-	const PlayerConstant_1 = __webpack_require__(12);
-	class LeCloudVideoAPI {
-	    constructor() {
-	        LeCloudVideoAPI.getInstance = this;
-	    }
-	    get_video_list_proxy(video_unique_id, callback) {
-	        this.callback = callback;
-	        LeCloudVideoAPI.vu = video_unique_id;
-	        $.ajax(LeCloudVideoAPI.LeCloudServerProxy + LeCloudVideoAPI.vu, {
-	            error: (what, status, error) => {
-	                this.onLoadFailed('loadVideoList from proxy failed!');
-	            },
-	            success: (data, status, what) => {
-	                // callback(data);
-	                this._final_data = data;
-	                window[PlayerConstant_1.default.player_videolist] = this._final_data;
-	                this.parse_videolist();
-	            },
-	        });
-	    }
-	    get_video_list(video_unique_id, callback) {
-	        this.callback = callback;
-	        LeCloudVideoAPI.vu = video_unique_id;
-	        this.get_timestamp(this.videolist);
-	    }
-	    /**
-	     * 获取乐视云的服务器时间戳. 如果获取失败,则使用本地时间代替.
-	     * @param    callback
-	     */
-	    get_timestamp(callback) {
-	        $.ajax(LeCloudVideoAPI.LeCloudServerTimeAPI + '?tn=' + Math.random(), {
-	            error: (what, status, error) => {
-	                let time = Math.floor(new Date().getTime() / 1000);
-	                this.onLoadFailed('load timestamp failed,use localtime:' + time);
-	                callback(time);
-	            },
-	            success: (data, status, what) => {
-	                callback(JSON.parse(data)['stime']);
-	            },
-	        });
-	    }
-	    get_videolist(time) {
-	        let _request_data = {};
-	        _request_data.video = LeCloudVideoAPI.vu;
-	        _request_data.vtype = 'm3u8';
-	        _request_data.ts = time;
-	        _request_data.user = LeCloudVideoAPI.api_user;
-	        _request_data.sign = LeCloudVideoAPI.getInstance.get_sign(_request_data);
-	        $.ajax(LeCloudVideoAPI.LeCloudServerAPI, {
-	            error: (what, status, error) => {
-	                this.onLoadFailed('getLeCloudVideoList');
-	            },
-	            success: (data, status, what) => {
-	                let obj = JSON.parse(data);
-	                if (obj['data'] && obj['data']['video_list']) {
-	                    obj = obj['data']['video_list'];
-	                    for (var name in obj) {
-	                        for (var i = 0; i < LeCloudVideoAPI.need_decode_key.length; i++)
-	                            obj[name][LeCloudVideoAPI.need_decode_key[i]] = window.btoa(obj[name][LeCloudVideoAPI.need_decode_key[i]]).toString();
-	                        this._final_data.push(obj[name]);
-	                    }
-	                }
-	                else {
-	                    console.log(obj);
-	                }
-	                window[PlayerConstant_1.default.player_videolist] = this._final_data;
-	                this.parse_videolist();
-	            },
-	            data: _request_data,
-	        });
-	    }
-	    parse_videolist() {
-	        let video_lists = JSON.parse(this._final_data);
-	        if (video_lists) {
-	            video_lists = video_lists['data'];
-	            if (video_lists) {
-	                video_lists = video_lists['video_list'];
-	                this.video_list = video_lists;
-	                this.callback(this.video_list);
-	                return;
-	            }
-	        }
-	        console.log('LeCloudVideoAPI.parse_videolist:failed!', this.data);
-	    }
-	    /**
-	     * 加密方式.弱智级别.毫无疑义.到底是为了防止谁使用?!?!?
-	     * @return
-	     */
-	    get_sign(_request_data) {
-	        var temp_arr = [];
-	        for (var name in _request_data)
-	            temp_arr.push(name + _request_data[name]);
-	        temp_arr.sort();
-	        return md5_1.default.hashStr(temp_arr.join('') + LeCloudVideoAPI.apr_secret); // .slice(8, 16 + 8);
-	    }
-	    getVideoResolutionURL(type) {
-	        for (let v in this.videolist) {
-	            let video_info = this.videolist[v];
-	            if (video_info['definition'] == type) {
-	                return video_info['main_url'];
-	            }
-	        }
-	        return '';
-	    }
-	    /**
-	     * 返回获取的数据
-	     * @returns {any}
-	     */
-	    get data() {
-	        return this._final_data;
-	    }
-	    /**
-	     * 返回解析过的视频数据.
-	     * @returns {any}
-	     */
-	    get videolist() {
-	        return this.video_list;
-	    }
-	    onLoadFailed(msg) {
-	        console.log('LeCloudVideoAPI.error:' + msg);
-	    }
-	}
-	LeCloudVideoAPI.LeCloudServerProxy = 'http://bilibili.moe/api/video/VideoAPI.php?api=LeCloudVideo&video_unique=';
-	LeCloudVideoAPI.LeCloudServerTimeAPI = 'http://api.letv.com/time';
-	LeCloudVideoAPI.LeCloudServerAPI = 'http://api.letvcloud.com/getplayurl.php';
-	LeCloudVideoAPI.need_decode_key = ['backup_url_1', 'backup_url_2', 'backup_url_3', 'main_url'];
-	LeCloudVideoAPI.api_user = '9a41a0d696';
-	LeCloudVideoAPI.apr_secret = 'f596293422b26d65d42c82daae6e0437';
-	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = LeCloudVideoAPI;
-	//# sourceMappingURL=LeCloudVideoAPI.js.map
 
 /***/ },
 /* 10 */
@@ -1145,82 +1201,271 @@
 
 	"use strict";
 	/**
-	 * Created by lizeq on 8/25/2016.
+	 * Created by lizeq on 8/26/2016.
 	 */
-	class PlayerControlEvent extends Event {
-	    constructor(type, DispatchData = null) {
-	        super(type);
-	        /** 给设置所使用的 **/
-	        this._config_name = '';
-	        this.data = DispatchData;
+	/**
+	 * 时间编码组件.
+	 * @ori_author 勇一 (TFT)
+	 * @author Lizeqiangd
+	 * 20141111 增加jwplayer的东西
+	 * 20160826 转为HTML TS模式
+	 */
+	class DateTimeUtils {
+	    /**
+	     * 判断传入的年份是否为闰年
+	     * @param year 传入的年份
+	     * @return 返回是否为闰年, true表示闰年
+	     */
+	    static isLeapYear(year) {
+	        if (year % 100 == 0) {
+	            if (year % 400 == 0) {
+	                return true;
+	            }
+	            return false;
+	        }
+	        else {
+	            if (year % 4 == 0) {
+	                return true;
+	            }
+	            else {
+	                return false;
+	            }
+	        }
 	    }
 	    /**
-	     * 如果是type是config. 则可以获取该值
+	     * 返回YYYY-MM-DD
 	     */
-	    get config_name() {
-	        return this._config_name == '' ? this.type : this._config_name;
+	    static getTime(now = null) {
+	        let date = now ? now : new Date();
+	        let hour = (date.getHours() > 9) ? date.getHours() : "0" + date.getHours();
+	        let minutes = (date.getMinutes() > 9) ? date.getMinutes() : "0" + date.getMinutes();
+	        let seconds = (date.getSeconds() > 9) ? date.getSeconds() : "0" + date.getSeconds();
+	        return hour + ":" + minutes + ":" + seconds;
 	    }
-	    set config_name(value) {
-	        this._config_name = value;
+	    /**
+	     * HH:MM:SS格式的日期字符串
+	     */
+	    static getDate(now = null) {
+	        let date = now ? now : new Date();
+	        let year = date.getFullYear();
+	        let month = (date.getMonth() + 1 > 9) ? date.getMonth() + 1 : "0" + (date.getMonth() + 1);
+	        let date_s = (date.getDate() > 0) ? date.getDate() : "0" + date.getDate();
+	        return year + "-" + month + "-" + date_s;
 	    }
-	    get config_data() {
-	        return this.data;
+	    /**
+	     * 当前日期和时间 格式为  yyyy-mm-dd hh:mm:ss
+	     */
+	    static getDateTime(now = null) {
+	        return DateTimeUtils.getDate(now) + " " + DateTimeUtils.getTime(now);
+	    }
+	    /**
+	     * 通过传入的秒数返回MM:SS格式的字符串
+	     * @param seconds 秒数的整数值
+	     * @return 返回MM:SS格式的时间字符串
+	     */
+	    static formatSecond(seconds) {
+	        let haveplayminite = Math.floor(seconds / 60);
+	        let haveplaysecond = Math.floor(Math.floor(seconds) % 60);
+	        let haveplayminite_s = haveplayminite.toString();
+	        let haveplaysecond_s = haveplaysecond.toString();
+	        if (haveplayminite < 10) {
+	            haveplayminite_s = "0" + haveplayminite_s;
+	        }
+	        if (haveplaysecond < 10) {
+	            haveplaysecond_s = "0" + haveplaysecond_s;
+	        }
+	        let out_put = haveplayminite_s + ":" + haveplaysecond_s;
+	        return out_put;
+	    }
+	    /**
+	     * 通过传入的毫秒时间,返回MM:SS格式的字符串
+	     * @param millisecond 毫秒的整数值
+	     * @return 返回MM:SS格式的字符串
+	     *
+	     */
+	    static formatMillisecond(millisecond) {
+	        let haveplayminite = Math.floor(millisecond / 60000);
+	        let haveplaysecond = Math.floor(Math.floor(millisecond / 1000) % 60);
+	        let haveplayminite_s = haveplayminite.toString();
+	        let haveplaysecond_s = haveplaysecond.toString();
+	        if (haveplayminite < 10) {
+	            haveplayminite_s = "0" + haveplayminite.toString();
+	        }
+	        if (haveplaysecond < 10) {
+	            haveplaysecond_s = "0" + haveplaysecond.toString();
+	        }
+	        let out_put = haveplayminite_s + ":" + haveplaysecond_s;
+	        return out_put;
+	    }
+	    /**
+	     * 获取一个通过时间来生成的字符串
+	     */
+	    static getTimestring() {
+	        let date = new Date();
+	        let returnStr = date.getFullYear().toString() + date.getMonth().toString() + date.getDate().toString() + date.getHours().toString()
+	            + date.getMinutes().toString() + date.getMilliseconds().toString();
+	        return returnStr;
+	    }
+	    /**
+	     * 转化一个string格式的时间为秒数 Supported are 00:03:00.1 / 03:00.1 / 180.1s / 3.2m / 3.2h
+	     * @param str    The input string. Supported are 00:03:00.1 / 03:00.1 / 180.1s / 3.2m / 3.2h
+	     * @return        The number of seconds.
+	     **/
+	    static seconds(str) {
+	        str = str.replace(',', '.');
+	        let arr = str.split(':');
+	        let sec = 0;
+	        if (str.substr(-2) == 'ms') {
+	            sec = parseInt(str.substr(0, str.length - 2)) / 1000;
+	        }
+	        else if (str.substr(-1) == 's') {
+	            sec = parseInt(str.substr(0, str.length - 1));
+	        }
+	        else if (str.substr(-1) == 'm') {
+	            sec = parseInt(str.substr(0, str.length - 1)) * 60;
+	        }
+	        else if (str.substr(-1) == 'h') {
+	            sec = parseInt(str.substr(0, str.length - 1)) * 3600;
+	        }
+	        else if (arr.length > 1) {
+	            sec = parseInt(arr[arr.length - 1]);
+	            sec += parseInt(arr[arr.length - 2]) * 60;
+	            if (arr.length == 3) {
+	                sec += parseInt(arr[arr.length - 3]) * 3600;
+	            }
+	        }
+	        else {
+	            sec = parseInt(str);
+	        }
+	        return sec;
+	    }
+	    /**
+	     * 解析传入的YYYY-MM-DD格式的字符串,按照Date对象的方式返回
+	     * @param s 输入的字符串对象
+	     * @return 返回转换后的Date
+	     */
+	    static parseDate(s) {
+	        let da = s.split("-");
+	        return new Date(parseInt(da[0], 10), parseInt(da[1], 10) - 1, parseInt(da[2], 10));
+	    }
+	    /** Remove white space from before and after a string. **/
+	    static trim(s) {
+	        return s.replace(/^\s+/, '').replace(/\s+$/, '');
 	    }
 	}
-	PlayerControlEvent.CONTROL_PANEL_MOUSEOVER = 'control_panel_mouseover';
-	PlayerControlEvent.CONTROL_PANEL_MOUSEOUT = 'control_panel_mouseout';
-	/** HTML5专用事件. **/
-	PlayerControlEvent.TIMEUPDATE = 'player_timeupdate';
-	PlayerControlEvent.LOADEDDATA = 'player_loadeddata';
-	PlayerControlEvent.CANPLAY = 'player_canplay';
-	PlayerControlEvent.VOLUMECHANGE = 'player_volumechange';
-	/** 播放器控制抛出事件. **/
-	PlayerControlEvent.PAUSE = "player_pause";
-	PlayerControlEvent.PLAY = "player_play";
-	PlayerControlEvent.SEEK = "player_seek";
-	PlayerControlEvent.RESOLUTION_CHANGE = 'player_resolution_change';
-	PlayerControlEvent.SCREEN_TYPE_CHANGE = 'player_screen_type_change';
-	/** 弹幕相关事件 **/
-	PlayerControlEvent.COMMENT_STYLE_CHANGED = 'comment_style_changed';
-	PlayerControlEvent.ADVANCE_COMMENT = 'advance_comment';
-	PlayerControlEvent.COMMENT_SUBMIT = 'comment_submit';
-	/** 其他通用事件 **/
-	PlayerControlEvent.SHARE = 'share';
-	PlayerControlEvent.NEXT_VEDIO = 'next_video';
-	PlayerControlEvent.ADVANCE_COMMENT_CONFIG = 'advance_comment_config';
-	PlayerControlEvent.ADVANCE_CONFIG = 'advance_config';
-	PlayerControlEvent.BILIBILI_LOGO = 'bilibili_logo';
-	/** 推荐面板 **/
-	PlayerControlEvent.RECOMMEND_DING = 'recommend_ding';
-	PlayerControlEvent.RECOMMEND_COIN = 'recommend_coin';
-	PlayerControlEvent.RECOMMEND_FAVOURITE = 'recommend_favourite';
-	/** 播放器控件准备完成 **/
-	PlayerControlEvent.READY = 'player_ready';
-	/** 播放器关于信息 **/
-	PlayerControlEvent.ABOUT_PLAYER = 'about_player';
 	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = PlayerControlEvent;
-	//# sourceMappingURL=PlayerControlEvent.js.map
+	exports.default = DateTimeUtils;
+	//# sourceMappingURL=DateTimeUtils.js.map
 
 /***/ },
 /* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Created by lizeq on 8/29/2016.
+	 */
+	"use strict";
+	/// <reference path="./../../utils/jquery.d.ts" />
+	const PlayerConstant_1 = __webpack_require__(1);
+	const KokoroBaseUnit_1 = __webpack_require__(7);
+	const VideoControlButtonManager_1 = __webpack_require__(13);
+	class KokoroVideoController extends KokoroBaseUnit_1.default {
+	    constructor() {
+	        super();
+	        this.createElement();
+	        this.vcbm = new VideoControlButtonManager_1.default();
+	        this.element.appendChild(this.vcbm.element);
+	        this.getJQuerySelector.addClass('background');
+	    }
+	    createElement() {
+	        this._element = document.createElement('div');
+	        this.element.className = PlayerConstant_1.default.class_KokoroVideoController;
+	    }
+	}
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = KokoroVideoController;
+	//# sourceMappingURL=KokoroVideoController.js.map
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Created by lizeq on 8/29/2016.
+	 */
+	"use strict";
+	/// <reference path="./../../utils/jquery.d.ts" />
+	const PlayerConstant_1 = __webpack_require__(1);
+	const KokoroBaseUnit_1 = __webpack_require__(7);
+	class VideoControlButtonManager extends KokoroBaseUnit_1.default {
+	    constructor() {
+	        super();
+	        this.createElement();
+	    }
+	    createElement() {
+	        this._element = document.createElement('div');
+	        this.element.className = PlayerConstant_1.default.class_VideoControlButtonManager;
+	    }
+	}
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = VideoControlButtonManager;
+	//# sourceMappingURL=VideoControlButtonManager.js.map
+
+/***/ },
+/* 14 */
 /***/ function(module, exports) {
 
-	"use strict";
-	/**
-	 * Created by lizeq on 8/22/2016.
-	 */
-	class PlayerConstant {
-	}
-	PlayerConstant.prefixed = 'tep_';
-	PlayerConstant.class_video = PlayerConstant.prefixed + 'video';
-	PlayerConstant.class_control = PlayerConstant.prefixed + 'controller';
-	PlayerConstant.class_comment = PlayerConstant.prefixed + 'comment';
-	PlayerConstant.class_videomask = PlayerConstant.prefixed + 'videomask';
-	PlayerConstant.player_videolist = PlayerConstant.prefixed + 'videolist';
-	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = PlayerConstant;
-	//# sourceMappingURL=PlayerConstant.js.map
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	// css base code, injected by the css-loader
+	module.exports = function() {
+		var list = [];
+
+		// return the list of modules as css string
+		list.toString = function toString() {
+			var result = [];
+			for(var i = 0; i < this.length; i++) {
+				var item = this[i];
+				if(item[2]) {
+					result.push("@media " + item[2] + "{" + item[1] + "}");
+				} else {
+					result.push(item[1]);
+				}
+			}
+			return result.join("");
+		};
+
+		// import a list of modules into the list
+		list.i = function(modules, mediaQuery) {
+			if(typeof modules === "string")
+				modules = [[null, modules, ""]];
+			var alreadyImportedModules = {};
+			for(var i = 0; i < this.length; i++) {
+				var id = this[i][0];
+				if(typeof id === "number")
+					alreadyImportedModules[id] = true;
+			}
+			for(i = 0; i < modules.length; i++) {
+				var item = modules[i];
+				// skip already imported module
+				// this implementation is not 100% perfect for weird media query combinations
+				//  when a module is imported multiple times with different media queries.
+				//  I hope this will never occur (Hey this way we have smaller bundles)
+				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+					if(mediaQuery && !item[2]) {
+						item[2] = mediaQuery;
+					} else if(mediaQuery) {
+						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+					}
+					list.push(item);
+				}
+			}
+		};
+		return list;
+	};
+
 
 /***/ }
 /******/ ]);

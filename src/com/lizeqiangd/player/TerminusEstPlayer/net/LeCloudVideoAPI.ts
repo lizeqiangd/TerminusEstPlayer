@@ -37,7 +37,7 @@ export default class LeCloudVideoAPI {
             success: (data, status, what)=> {
                 // callback(data);
                 this._final_data = data;
-                window[PlayerConstant.player_videolist] = this._final_data;
+                window[PlayerConstant.player_videolist] = data;
                 this.parse_videolist();
             },
         })

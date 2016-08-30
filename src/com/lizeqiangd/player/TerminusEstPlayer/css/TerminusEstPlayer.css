@@ -1,7 +1,23 @@
 .tep_video{
-    position: relative;
+    /*position: relative;*/
     overflow: hidden;
     width: 100%;
+}
+
+.tep_player{
+    position: relative;
+}
+
+.tep_kvc {
+    width: 100%;
+    height: 70px;
+    opacity: .5;
+    background-color: #000000;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
 }
 
 
@@ -9,7 +25,15 @@
 
 
 
-
+.KokoroPlayerControllerManager {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    z-index: 12;
+}
 
 
 
@@ -26,38 +50,8 @@
     z-index: 0;
 }
 
-.controller {
-    width: 100%;
-    height: 70px;
 
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 10;
-}
 
-.background {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 100%;
-    opacity: .5;
-    background-color: #000000;
-    z-index: 11;
-
-}
-
-.KokoroPlayerControllerManager {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 100%;
-    z-index: 12;
-}
 
 .kpcm_left {
     float: left;
